@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'vanga.apps.VangaConfig',
+    'users.apps.UsersConfig',
     'rest_framework'
 ]
 
