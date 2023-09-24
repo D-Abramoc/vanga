@@ -1,0 +1,3 @@
+MAX_HASH_LEN: int = 32
+MIN_SIZE_ID: int = 1
+MAX_SIZE_ID: int = 100
