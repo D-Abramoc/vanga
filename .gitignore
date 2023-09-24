@@ -4,3 +4,4 @@ migrations/
 .vscode/
 *.sqlite3
 .env
+data/
