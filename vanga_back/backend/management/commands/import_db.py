@@ -22,7 +22,7 @@ class Command(BaseCommand):
         m.Division.objects.bulk_create(divisions)
         print('Импорт дивизионов завершён')
 
-        for index, row in st_df.iterrows():
+        for _, row in st_df.iterrows():
             shops.append(m.Shop(
                 st_id=row['st_id'],
                 st_city_id=m.City.objects.get(city_id=row['st_city_id']),
@@ -74,7 +74,7 @@ class Command(BaseCommand):
         m.Subcategory.objects.bulk_create(subcategories)
         print('Импорт подкатегорий завершён.')
 
-        for index, row in pr_df.iterrows():
+        for _, row in pr_df.iterrows():
             uom_id = 0 if row['pr_uom_id'] == 17 else 1
             products.append(m.Product(
                 pr_sku_id=row['pr_sku_id'],
