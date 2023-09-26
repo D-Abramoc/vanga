@@ -75,14 +75,13 @@ class Command(BaseCommand):
         print('Импорт подкатегорий завершён.')
 
         for index, row in pr_df.iterrows():
-            uom_id = 0 if row['pr_uom_id'] == 17 else 1
             products.append(m.Product(
                 pr_sku_id=row['pr_sku_id'],
                 pr_subcat_id=m.Subcategory.objects.get(subcat_id=row['pr_subcat_id']),
-                pr_uom_id=uom_id)
+                pr_uom_id=row['pr_uom_id'])
             )
         m.Product.objects.bulk_create(products)
-        print('Импорт магазинов завершён.')
+        print('Импорт товаров завершён.')
 
     def handle(self, *args, **options):
         self.import_st_df_csv()

@@ -110,7 +110,7 @@ class Product(models.Model):
     pr_subcat_id = models.ForeignKey(Subcategory,
                                      on_delete=models.CASCADE,
                                      related_name='subcategories')
-    pr_uom_id = models.BooleanField('Весовой/штучный товар')
+    pr_uom_id = models.IntegerField('Код единиц измерения товара')
 
     class Meta:
         verbose_name = 'Хэш id товара'
