@@ -13,7 +13,13 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='saddagy435y)i0qqwer98e')
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1',
-                 'localhost']
+                 'localhost', 'web']
+
+CSRF_TRUSTED_ORIGINS = ['http://*.158.160.123.145/', 'http://*.127.0.0.1/',
+                        'http://*.localhost/']
+
+CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000',
+                        'http://localhost:5173']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -94,6 +100,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static/'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
