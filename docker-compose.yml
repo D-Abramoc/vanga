@@ -6,14 +6,14 @@ services:
     volumes:
       - /var/lib/postgresql/data/
     env_file:
-      - /.env
+      - ./.env
 
-web:
-  build: .
-  restart: always
-  ports:
-    - "8000:8000"
-  depends_on:
-    - db
-  env_file:
-    - ./.env
+  web:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./.env
