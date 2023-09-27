@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Product, Shop, Subcategory
+from backend.models import City, Product, Shop, Subcategory
 
 
 class ShopSerializer(serializers.ModelSerializer):
@@ -35,3 +35,9 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = ['id', 'pr_uom_id', 'pr_subcat_id', 'pr_sku_id']
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = '__all__'

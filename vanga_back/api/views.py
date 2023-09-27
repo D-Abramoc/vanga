@@ -3,7 +3,7 @@ from rest_framework import viewsets
 
 from backend.models import City, Product, Shop
 
-from .serializers import ProductSerializer, ShopSerializer
+from .serializers import CitySerializer, ProductSerializer, ShopSerializer
 
 
 @extend_schema(tags=['Список ТЦ'])
@@ -18,6 +18,22 @@ class ShopViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema(tags=['Товарная иерархия'])
+@extend_schema_view(
+    list=extend_schema(
+        summary='Получить список товаров'
+    )
+)
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+
+@extend_schema(tags=['Города присутствия'])
+@extend_schema_view(
+    list=extend_schema(
+        summary='Получить список городов'
+    )
+)
+class CityViewSet(viewsets.ModelViewSet):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
