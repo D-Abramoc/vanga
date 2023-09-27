@@ -12,3 +12,12 @@ git clone git@github.com:D-Abramoc/vanga.git
 pip install -r requirements.txt
 ```
 - создать файл .env заполнить по примеру env.sample
+## Импорт базы данных ##
+- первичный импорт осуществляется автоматически при развертывании контейнеров
+- для импорта данных о продажах:
+1) скопировать .csv файл с данными в папку /data
+2) выполнить команду:
+```
+python manage.py import_sales filename.csv
+```
+- filename.csv - имя файла с указанием формата

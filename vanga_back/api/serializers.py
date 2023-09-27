@@ -1,6 +1,36 @@
 from rest_framework import serializers
 
-from backend.models import Product, Shop, Subcategory
+from backend.models import (City, Division, Group, Category, Sale, Forecast,
+                            Product, Shop, Subcategory)
+
+
+class ForecastSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Forecast
+        fields = '__all__'
+
+
+class SaleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sale
+        fields = '__all__'
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
+
+class DivisionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Division
+        fields = '__all__'
 
 
 class ShopSerializer(serializers.ModelSerializer):
@@ -14,7 +44,7 @@ class ShopSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shop
-        exclude = ['id', 'st_id', 'st_city_id', 'st_division_code_id',
+        exclude = ['st_id', 'st_city_id', 'st_division_code_id',
                    'st_type_format_id', 'st_type_loc_id', 'st_type_size_id',
                    'st_is_active']
 
@@ -30,8 +60,14 @@ class ProductSerializer(serializers.ModelSerializer):
     group = serializers.CharField(source='pr_subcat_id.cat_id.group_id.group_id')
     category = serializers.CharField(source='pr_subcat_id.cat_id.cat_id')
     subcategory = serializers.CharField(source='pr_subcat_id.subcat_id')
-    uom = serializers.BooleanField(source='pr_uom_id')
+    uom = serializers.IntegerField(source='pr_uom_id')
 
     class Meta:
         model = Product
-        exclude = ['id', 'pr_uom_id', 'pr_subcat_id', 'pr_sku_id']
+        exclude = ['pr_uom_id', 'pr_subcat_id', 'pr_sku_id']
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = '__all__'

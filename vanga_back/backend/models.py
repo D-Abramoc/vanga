@@ -1,37 +1,37 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from .constants import *
+from . import constants as csnt
 
 
 class City(models.Model):
     """Модель города"""
     city_id = models.CharField('Хэш id города',
-                                  max_length=MAX_HASH_LEN,
-                                  unique=True)
+                               max_length=csnt.MAX_HASH_LEN,
+                               unique=True)
 
     class Meta:
-        verbose_name = 'Хэш id города'
-        verbose_name_plural = 'Хэш id городов'
+        verbose_name = 'Город'
+        verbose_name_plural = 'Города'
         ordering = ['city_id']
 
 
 class Division(models.Model):
     """Модель дивизиона"""
     division_code_id = models.CharField('Хэш id дивизиона',
-                                           max_length=MAX_HASH_LEN,
-                                           unique=True)
+                                        max_length=csnt.MAX_HASH_LEN,
+                                        unique=True)
 
     class Meta:
-        verbose_name = 'Хэш id дивизиона'
-        verbose_name_plural = 'Хэш id дивизионов'
+        verbose_name = 'Дивизион'
+        verbose_name_plural = 'Дивизионы'
         ordering = ['division_code_id']
 
 
 class Shop(models.Model):
     """Модель магазина"""
     st_id = models.CharField('Хэш id магазина',
-                             max_length=MAX_HASH_LEN,
+                             max_length=csnt.MAX_HASH_LEN,
                              unique=True)
     st_city_id = models.ForeignKey(City,
                                    on_delete=models.CASCADE,
@@ -47,28 +47,28 @@ class Shop(models.Model):
         'id типа размера магазина',
         validators=[
             MinValueValidator(
-                MIN_SIZE_ID, message='Минимальное значение: 1'),
+                csnt.MIN_SIZE_ID, message='Минимальное значение: 1'),
             MaxValueValidator(
-                MAX_SIZE_ID, message='Максимальное значение: 100')
+                csnt.MAX_SIZE_ID, message='Максимальное значение: 100')
         ]
     )
     st_is_active = models.BooleanField('Флаг активного магазина')
 
     class Meta:
-        verbose_name = 'Хэш id магазина'
-        verbose_name_plural = 'Хэш id магазинов'
+        verbose_name = 'Магазин'
+        verbose_name_plural = 'Магазины'
         ordering = ['st_id']
 
 
 class Group(models.Model):
     """Модель группы товаров"""
     group_id = models.CharField('Хэш id группы товаров',
-                                   max_length=MAX_HASH_LEN,
-                                   unique=True)
+                                max_length=csnt.MAX_HASH_LEN,
+                                unique=True)
 
     class Meta:
-        verbose_name = 'Хэш id группы товаров'
-        verbose_name_plural = 'Хэш id групп товаров'
+        verbose_name = 'Группа товаров'
+        verbose_name_plural = 'Группы товаров'
         ordering = ['group_id']
 
 
@@ -78,12 +78,12 @@ class Category(models.Model):
                                  on_delete=models.CASCADE,
                                  related_name='groups')
     cat_id = models.CharField('Хэш id категории товаров',
-                              max_length=MAX_HASH_LEN,
+                              max_length=csnt.MAX_HASH_LEN,
                               unique=True)
 
     class Meta:
-        verbose_name = 'Хэш id категории товаров'
-        verbose_name_plural = 'Хэш id категорий товаров'
+        verbose_name = 'Категория товаров'
+        verbose_name_plural = 'Категории товаров'
         ordering = ['cat_id']
 
 
@@ -93,28 +93,28 @@ class Subcategory(models.Model):
                                on_delete=models.CASCADE,
                                related_name='categories')
     subcat_id = models.CharField('Хэш id подкатегории товаров',
-                                    max_length=MAX_HASH_LEN,
-                                    unique=True)
+                                 max_length=csnt.MAX_HASH_LEN,
+                                 unique=True)
 
     class Meta:
-        verbose_name = 'Хэш id подкатегории товаров'
-        verbose_name_plural = 'Хэш id подкатегорий товаров'
+        verbose_name = 'Подкатегория товаров'
+        verbose_name_plural = 'Подкатегории товаров'
         ordering = ['subcat_id']
 
 
 class Product(models.Model):
     """Модель товара"""
     pr_sku_id = models.CharField('Хэш id товара',
-                                 max_length=MAX_HASH_LEN,
+                                 max_length=csnt.MAX_HASH_LEN,
                                  unique=True)
     pr_subcat_id = models.ForeignKey(Subcategory,
                                      on_delete=models.CASCADE,
                                      related_name='subcategories')
-    pr_uom_id = models.BooleanField('Весовой/штучный товар')
+    pr_uom_id = models.IntegerField('Код единиц измерения товара')
 
     class Meta:
-        verbose_name = 'Хэш id товара'
-        verbose_name_plural = 'Хэш id товаров'
+        verbose_name = 'Товар'
+        verbose_name_plural = 'Товары'
         ordering = ['pr_sku_id']
 
 
@@ -133,3 +133,24 @@ class Sale(models.Model):
     pr_sales_in_rub = models.IntegerField('Продажи без промо, руб')
     pr_promo_sales_in_rub = models.IntegerField('Продажи с промо, руб')
 
+    class Meta:
+        verbose_name = 'Продажа'
+        verbose_name_plural = 'Продажи'
+        ordering = ['-date']
+
+
+class Forecast(models.Model):
+    """Модель прогноза"""
+    st_id = models.ForeignKey(Shop,
+                              on_delete=models.CASCADE,
+                              related_name='fc_stores')
+    pr_sku_id = models.ForeignKey(Product,
+                                  on_delete=models.CASCADE,
+                                  related_name='fc_products')
+    date = models.DateField('Дата')
+    target = models.IntegerField('Прогноз продаж')
+
+    class Meta:
+        verbose_name = 'Прогноз'
+        verbose_name_plural = 'Прогнозы'
+        ordering = ['-date']
