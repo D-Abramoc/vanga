@@ -1,4 +1,7 @@
 # vanga
+
+![Workflow for test, build and deploy](https://github.com/D-Abramoc/vanga/actions/workflows/vanga_cicd.yml/badge.svg)
+
 # Предсказывает продажи, сокращает издержки
 ## Команда разработчиков
 ## Запуск приложения ##
