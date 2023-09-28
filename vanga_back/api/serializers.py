@@ -1,6 +1,6 @@
-from rest_framework import serializers
 from backend.models import (Category, City, Division, Forecast, Group,
                             Product, Sale, Shop, Subcategory)
+from rest_framework import serializers
 
 
 class ForecastSerializer(serializers.ModelSerializer):
