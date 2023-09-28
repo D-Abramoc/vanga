@@ -1,11 +1,10 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import (CityViewSet, ProductViewSet, ShopViewSet, ForecastViewSet,
-                    SaleViewSet, CategoryViewSet, GroupViewSet,
-                    DivisionViewSet)
 from .custom_routers import OnlyGetRouter
-
+from .views import (CategoryViewSet, CityViewSet, DivisionViewSet,
+                    ForecastViewSet, GroupViewSet, ProductViewSet, SaleViewSet,
+                    ShopViewSet)
 
 app_name = 'api'
 

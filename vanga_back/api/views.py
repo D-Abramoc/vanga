@@ -1,14 +1,13 @@
+from backend.models import (Category, City, Division, Forecast, Group, Product,
+                            Sale, Shop)
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 
-from backend.models import (City, Product, Shop, Forecast, Sale, Category,
-                            Group, Division)
-
 from .custom_paginators import MaxLimitLimitOffsetPagination
-from .serializers import (CitySerializer, ProductSerializer, ShopSerializer,
-                          ForecastSerializer, SaleSerializer,
-                          CategorySerializer, GroupSerializer,
-                          DivisionSerializer)
+from .serializers import (CategorySerializer, CitySerializer,
+                          DivisionSerializer, ForecastSerializer,
+                          GroupSerializer, ProductSerializer, SaleSerializer,
+                          ShopSerializer)
 
 
 @extend_schema(tags=['Прогноз'])

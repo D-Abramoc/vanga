@@ -1,6 +1,5 @@
-from django.core.management.base import BaseCommand
-
 from backend import models as m
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
