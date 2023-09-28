@@ -22,6 +22,8 @@ router_v1_only_get.register(r'groups', GroupViewSet, basename='groups')
 router_v1_only_get.register(r'divisions', DivisionViewSet, basename='divisions')
 
 urlpatterns = [
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
     path('v1/', include(router_v1_only_get.urls)),
     path('v1/', include(router_v1.urls))
 ]
