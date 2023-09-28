@@ -3,7 +3,6 @@ import pandas as pd
 from django.core.management.base import BaseCommand
 
 from backend import models as m
-from .import_sales import import_sales_df
 
 
 def import_pr_df_csv():

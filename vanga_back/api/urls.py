@@ -17,9 +17,13 @@ router_v1.register('sales', SaleViewSet, basename='sales')
 router_v1_only_get.register(r'shops', ShopViewSet, basename='shops')
 router_v1_only_get.register(r'products', ProductViewSet, basename='products')
 router_v1_only_get.register(r'cities', CityViewSet, basename='cities')
-router_v1_only_get.register(r'categories', CategoryViewSet, basename='categories')
+router_v1_only_get.register(
+    r'categories', CategoryViewSet, basename='categories'
+)
 router_v1_only_get.register(r'groups', GroupViewSet, basename='groups')
-router_v1_only_get.register(r'divisions', DivisionViewSet, basename='divisions')
+router_v1_only_get.register(
+    r'divisions', DivisionViewSet, basename='divisions'
+)
 
 urlpatterns = [
     path('auth/', include('djoser.urls')),
@@ -27,4 +31,3 @@ urlpatterns = [
     path('v1/', include(router_v1_only_get.urls)),
     path('v1/', include(router_v1.urls))
 ]
-
