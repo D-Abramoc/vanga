@@ -13,7 +13,13 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='saddagy435y)i0qqwer98e')
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1',
-                 'localhost']
+                 'localhost', 'web']
+
+CSRF_TRUSTED_ORIGINS = ['http://*.158.160.123.145/', 'http://*.127.0.0.1/',
+                        'http://*.localhost/']
+
+CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000',
+                        'http://localhost:5173']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,12 +32,14 @@ INSTALLED_APPS = [
     'backend.apps.BackendConfig',
     'users.apps.UsersConfig',
     'rest_framework',
-    'drf_spectacular'
+    'drf_spectacular',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -61,10 +69,10 @@ WSGI_APPLICATION = 'vanga_back.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='postgres'),
-        'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='adminadmin'),
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': os.getenv('DB_NAME', default='db.sqlite3'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT')
     }
@@ -94,6 +102,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static/'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
