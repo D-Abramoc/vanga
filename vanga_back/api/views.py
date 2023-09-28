@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from backend.models import (City, Product, Shop, Forecast, Sale, Category,
                             Group, Division)
 
+from .custom_paginators import MaxLimitLimitOffsetPagination
 from .serializers import (CitySerializer, ProductSerializer, ShopSerializer,
                           ForecastSerializer, SaleSerializer,
                           CategorySerializer, GroupSerializer,
@@ -30,6 +31,7 @@ class ForecastViewSet(viewsets.ModelViewSet):
 class SaleViewSet(viewsets.ModelViewSet):
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
+    pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Категории'])
@@ -85,6 +87,7 @@ class ShopViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Города присутствия'])

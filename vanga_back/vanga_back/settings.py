@@ -129,6 +129,10 @@ SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+DJOSER = {
+    'user': 'api.serializers.UserSerializer',
+}
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'VANGA API',
     'DESCRIPTION': 'Прогностический инструмент в помощь планирования '
