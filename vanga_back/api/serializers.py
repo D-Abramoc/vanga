@@ -1,9 +1,14 @@
 from backend.models import (Category, City, Division, Forecast, Group, Product,
                             Sale, Shop, Subcategory)
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import (UserCreateSerializer, UserSerializer)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from users.models import User
+
+
+# class CustomTokenCreateSerializer(TokenCreateSerializer):
+#     class Meta:
+#         model
 
 
 class MeUserSerializer(UserSerializer):
