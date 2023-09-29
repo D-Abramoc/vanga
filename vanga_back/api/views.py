@@ -12,6 +12,16 @@ from .serializers import (CategorySerializer, CitySerializer,
                           ShopSerializer, MeUserSerializer)
 
 
+class GetProductSalesForPeriod(viewsets.ModelViewSet):
+    '''
+    Возвращает данные о продажах выбранного товара.
+    
+    На вход получает товар, магазин, дату от которой смотрим
+    и количество дней на сколько смотрим.
+    '''
+    ...
+
+
 @extend_schema(tags=['Пользователь'])
 @extend_schema_view(
     me=extend_schema(
