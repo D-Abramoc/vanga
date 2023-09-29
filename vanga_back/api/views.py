@@ -121,7 +121,7 @@ class ShopViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    pagination_class = MaxLimitLimitOffsetPagination
+    # pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Города присутствия'])
