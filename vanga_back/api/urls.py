@@ -5,7 +5,7 @@ from .custom_routers import OnlyGetRouter
 from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
                     ProductViewSet, SaleViewSet, ShopViewSet,
-                    CustomTokenViewSet)
+                    CustomTokenViewSet, MeUserViewSet)
 
 app_name = 'api'
 
@@ -28,6 +28,7 @@ router_v1_only_get.register(
 urlpatterns = [
     path('auth/users/', CustomUserViewSet.as_view({'post': 'create'})),
     path('auth/jwt/create/', CustomTokenViewSet.as_view()),
+    path('auth/users/me/', MeUserViewSet.as_view({'get': 'me'})),
     # path('auth/', include('djoser.urls')),
     # path('auth/', include('djoser.urls.jwt')),
     path('v1/', include(router_v1_only_get.urls)),

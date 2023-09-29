@@ -9,7 +9,18 @@ from .custom_paginators import MaxLimitLimitOffsetPagination
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           GroupSerializer, ProductSerializer, SaleSerializer,
-                          ShopSerializer)
+                          ShopSerializer, MeUserSerializer)
+
+
+@extend_schema(tags=['Пользователь'])
+@extend_schema_view(
+    me=extend_schema(
+        summary='Данные текущего пользователя'
+    )
+)
+class MeUserViewSet(views.UserViewSet):
+    '''Данные текущего пользователя.'''
+    serializer_class = MeUserSerializer
 
 
 @extend_schema(tags=['Пользователь'])
