@@ -1,13 +1,37 @@
 from backend.models import (Category, City, Division, Forecast, Group, Product,
                             Sale, Shop)
+from djoser import views
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .custom_paginators import MaxLimitLimitOffsetPagination
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           GroupSerializer, ProductSerializer, SaleSerializer,
                           ShopSerializer)
+
+
+@extend_schema(tags=['Пользователь'])
+@extend_schema_view(
+    create=(extend_schema(
+        summary='Регистрация пользователя'
+    ))
+)
+class CustomUserViewSet(views.UserViewSet):
+    '''Регистрация нового пользователя.'''
+    pass
+
+
+@extend_schema(tags=['Пользователь'])
+@extend_schema_view(
+    post=extend_schema(
+        summary='Создать токен'
+    )
+)
+class CustomTokenViewSet(TokenObtainPairView):
+    '''Получение токена аутентификации пользователя.'''
+    pass
 
 
 @extend_schema(tags=['Прогноз'])

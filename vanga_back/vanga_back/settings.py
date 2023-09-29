@@ -130,7 +130,9 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    'user': 'api.serializers.UserSerializer',
+    'SERIALIZERS': {
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
+    },
 }
 
 SPECTACULAR_SETTINGS = {

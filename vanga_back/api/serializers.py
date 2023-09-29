@@ -1,6 +1,32 @@
 from backend.models import (Category, City, Division, Forecast, Group, Product,
                             Sale, Shop, Subcategory)
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from users.models import User
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'password',)
+
+    def validate(self, attrs):
+        if 'email' not in attrs:
+            raise ValidationError('This field is required.')
+        if User.objects.filter(email=attrs['email']).exists():
+            raise ValidationError(
+                'Пользователь с такой почтой уже зарегистрирован.'
+            )
+        return super().validate(attrs)
+
+    def perform_create(self, validated_data):
+        if 'username'not in validated_data:
+            try:
+                validated_data['username'] = validated_data['email']
+            except KeyError:
+                raise ValidationError('Email required.')
+        return super().perform_create(validated_data)
 
 
 class ForecastSerializer(serializers.ModelSerializer):
