@@ -1,25 +1,51 @@
 from backend.models import (Category, City, Division, Forecast, Group, Product,
                             Sale, Shop)
 from djoser import views
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import (extend_schema, extend_schema_view,
+                                   OpenApiParameter,)
+from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .custom_paginators import MaxLimitLimitOffsetPagination
+from .filters import DateFilter, StoreFilter, SKUFilter
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           GroupSerializer, ProductSerializer, SaleSerializer,
                           ShopSerializer, MeUserSerializer)
 
 
+@extend_schema(tags=['Продажи'])
+@extend_schema_view(
+    list=extend_schema(
+        summary='Получить продажи определённого товара за период',
+        parameters=[
+            OpenApiParameter(
+                'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY
+            ),
+            OpenApiParameter(
+                'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY
+            ),
+            OpenApiParameter(
+                'store', OpenApiTypes.INT, OpenApiParameter.QUERY
+            ),
+            OpenApiParameter(
+                'sku', OpenApiTypes.INT, OpenApiParameter.QUERY
+            ),
+        ]
+    )
+)
 class GetProductSalesForPeriod(viewsets.ModelViewSet):
     '''
     Возвращает данные о продажах выбранного товара.
-    
+
     На вход получает товар, магазин, дату от которой смотрим
     и количество дней на сколько смотрим.
     '''
-    ...
+    queryset = Sale.objects.all()
+    serializer_class = SaleSerializer
+    filter_backends = (DateFilter, StoreFilter, SKUFilter)
+    pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Пользователь'])

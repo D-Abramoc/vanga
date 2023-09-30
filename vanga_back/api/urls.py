@@ -5,7 +5,8 @@ from .custom_routers import OnlyGetRouter
 from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
                     ProductViewSet, SaleViewSet, ShopViewSet,
-                    CustomTokenViewSet, MeUserViewSet)
+                    CustomTokenViewSet, MeUserViewSet,
+                    GetProductSalesForPeriod)
 
 app_name = 'api'
 
@@ -31,6 +32,9 @@ urlpatterns = [
     path('auth/users/me/', MeUserViewSet.as_view({'get': 'me'})),
     # path('auth/', include('djoser.urls')),
     # path('auth/', include('djoser.urls.jwt')),
+    path(
+        'v1/sales/period/', GetProductSalesForPeriod.as_view({'get': 'list'})
+    ),
     path('v1/', include(router_v1_only_get.urls)),
     path('v1/', include(router_v1.urls)),
 ]

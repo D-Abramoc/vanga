@@ -49,7 +49,7 @@ class ForecastSerializer(serializers.ModelSerializer):
 class SaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sale
-        fields = '__all__'
+        fields = ('st_id', 'pr_sku_id', 'date', 'pr_sales_in_units',)
 
 
 class CategorySerializer(serializers.ModelSerializer):
