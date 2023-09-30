@@ -1,5 +1,6 @@
-from backend.models import (Category, City, Division, Forecast, Group, Product,
+from backend.models import (Category, City, Division, Group, Product,
                             Sale, Shop)
+from forecast.models import Forecast
 from djoser import views
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets

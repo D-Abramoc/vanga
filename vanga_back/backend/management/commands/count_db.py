@@ -1,4 +1,5 @@
 from backend import models as m
+from forecast.models import Forecast
 from django.core.management.base import BaseCommand
 
 
@@ -14,3 +15,4 @@ class Command(BaseCommand):
         print('Подкатегория:', m.Subcategory.objects.all().count())
         print('Товар:', m.Product.objects.all().count())
         print('Продажа:', m.Sale.objects.all().count())
+        print('Прогноз:', Forecast.objects.all().count())
