@@ -137,20 +137,3 @@ class Sale(models.Model):
         verbose_name = 'Продажа'
         verbose_name_plural = 'Продажи'
         ordering = ['-date']
-
-
-class Forecast(models.Model):
-    """Модель прогноза"""
-    st_id = models.ForeignKey(Shop,
-                              on_delete=models.CASCADE,
-                              related_name='fc_stores')
-    pr_sku_id = models.ForeignKey(Product,
-                                  on_delete=models.CASCADE,
-                                  related_name='fc_products')
-    date = models.DateField('Дата')
-    target = models.IntegerField('Прогноз продаж')
-
-    class Meta:
-        verbose_name = 'Прогноз'
-        verbose_name_plural = 'Прогнозы'
-        ordering = ['-date']
