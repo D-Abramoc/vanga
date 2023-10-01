@@ -130,9 +130,14 @@ class SaleSerializer(serializers.ModelSerializer):
 
 
 class TestProductSerializer(serializers.ModelSerializer):
+    data = serializers.SerializerMethodField('get_sales')
+
     class Meta:
         model = Product
         fields = ('id', 'pr_sku_id',)
+
+    def get_sales(self, obj):
+        ...
 
 
 class TestSubcategorySerializer(serializers.ModelSerializer):
