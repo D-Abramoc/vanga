@@ -7,9 +7,10 @@ from rest_framework.exceptions import ValidationError
 from users.models import User
 
 
-# class CustomTokenCreateSerializer(TokenCreateSerializer):
-#     class Meta:
-#         model
+class CustomUserSerializer(UserSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'password']
 
 
 class MeUserSerializer(UserSerializer):
