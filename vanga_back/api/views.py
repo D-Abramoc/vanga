@@ -1,6 +1,7 @@
 from backend.models import (Category, City, Division, Group, Product,
                             Sale, Shop)
 from forecast.models import Forecast
+from django.db.models import Count
 from djoser import views
 from drf_spectacular.utils import (extend_schema, extend_schema_view,
                                    OpenApiParameter,)
@@ -9,11 +10,12 @@ from rest_framework import viewsets
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .custom_paginators import MaxLimitLimitOffsetPagination
-from .filters import DateFilter, StoreFilter, SKUFilter
+from .filters import DateFilter, StoreFilter, SKUFilter, TestFilter
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           GroupSerializer, ProductSerializer, SaleSerializer,
-                          ShopSerializer, MeUserSerializer)
+                          ShopSerializer, MeUserSerializer, TestGroupSerializer,
+                          TestShopSerializer)
 
 
 @extend_schema(tags=['Продажи'])
@@ -22,16 +24,19 @@ from .serializers import (CategorySerializer, CitySerializer,
         summary='Получить продажи определённого товара за период',
         parameters=[
             OpenApiParameter(
-                'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY
+                'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
+                default='2023-05-28'
             ),
             OpenApiParameter(
-                'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY
+                'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
+                default='2023-06-28'
             ),
             OpenApiParameter(
-                'store', OpenApiTypes.INT, OpenApiParameter.QUERY
+                'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                default=6
             ),
             OpenApiParameter(
-                'sku', OpenApiTypes.INT, OpenApiParameter.QUERY
+                'sku', OpenApiTypes.INT, OpenApiParameter.QUERY, default=1186
             ),
         ]
     )
@@ -45,8 +50,19 @@ class GetProductSalesForPeriod(viewsets.ModelViewSet):
     '''
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
-    filter_backends = (DateFilter, StoreFilter, SKUFilter)
+    # filter_backends = (DateFilter, StoreFilter, SKUFilter)
+    # filter_backends = (TestFilter,)
     pagination_class = MaxLimitLimitOffsetPagination
+
+    def get_queryset(self):
+        if self.request.query_params:
+            return Shop.objects.all()
+        return super().get_queryset()
+
+    def get_serializer_class(self):
+        if self.request.query_params:
+            return TestShopSerializer
+        return super().get_serializer_class()
 
 
 @extend_schema(tags=['Пользователь'])
@@ -124,7 +140,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 )
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    serializer_class = TestGroupSerializer
 
 
 @extend_schema(tags=['Дивизионы'])

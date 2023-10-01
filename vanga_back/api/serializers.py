@@ -48,12 +48,6 @@ class ForecastSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SaleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sale
-        fields = ('st_id', 'pr_sku_id', 'date', 'pr_sales_in_units',)
-
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -114,3 +108,62 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = '__all__'
+
+
+class DefaultShopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = '__all__'
+
+
+class SaleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sale
+        fields = ('st_id', 'pr_sku_id', 'date', 'pr_sales_in_units',)
+
+    def to_representation(self, instance):
+        return super().to_representation(instance)
+
+
+class TestProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+class TestSubcategorySerializer(serializers.ModelSerializer):
+    subcategories = TestProductSerializer(many=True)
+
+    class Meta:
+        model = Subcategory
+        fields = ('id', 'subcat_id', 'subcategories')
+
+
+class TestCategorySerializer(serializers.ModelSerializer):
+    categories = TestSubcategorySerializer(many=True)
+
+    class Meta:
+        model = Category
+        fields = ('id', 'cat_id','categories',)
+
+
+class TestGroupSerializer(serializers.ModelSerializer):
+    groups = TestCategorySerializer(many=True)
+    # categories = SubcategorySerializer(many=True)
+
+    class Meta:
+        model = Group
+        fields = ('id', 'group_id', 'groups')
+
+
+class TestShopSerializer(serializers.ModelSerializer):
+    stores = serializers.SlugRelatedField(
+        slug_field='stores',
+        queryset=Product.objects.all(),
+        many=True
+    )
+
+    class Meta:
+        model = Shop
+        fields = ('id', 'st_id', 'stores')

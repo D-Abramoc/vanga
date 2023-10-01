@@ -2,6 +2,12 @@ from django.db.models import Count
 from rest_framework import filters
 
 
+class TestFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        return queryset.values('pr_sku_id').annotate(pr=Count('pr_sku_id'))
+
+
 class DateFilter(filters.BaseFilterBackend):
     '''Фильтр по датам.'''
 
