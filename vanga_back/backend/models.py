@@ -15,6 +15,10 @@ class City(models.Model):
         verbose_name_plural = 'Города'
         ordering = ['city_id']
 
+    def __str__(self):
+        return self.city_id
+
+
 
 class Division(models.Model):
     """Модель дивизиона"""
@@ -26,6 +30,9 @@ class Division(models.Model):
         verbose_name = 'Дивизион'
         verbose_name_plural = 'Дивизионы'
         ordering = ['division_code_id']
+
+    def __str__(self):
+        return self.division_code_id
 
 
 class Shop(models.Model):
@@ -59,6 +66,9 @@ class Shop(models.Model):
         verbose_name_plural = 'Магазины'
         ordering = ['st_id']
 
+    def __str__(self):
+        return self.st_id
+
 
 class Group(models.Model):
     """Модель группы товаров"""
@@ -70,6 +80,9 @@ class Group(models.Model):
         verbose_name = 'Группа товаров'
         verbose_name_plural = 'Группы товаров'
         ordering = ['group_id']
+
+    def __str__(self):
+        return self.group_id
 
 
 class Category(models.Model):
@@ -86,6 +99,9 @@ class Category(models.Model):
         verbose_name_plural = 'Категории товаров'
         ordering = ['cat_id']
 
+    def __str__(self):
+        return self.cat_id
+
 
 class Subcategory(models.Model):
     """Модель подкатегории товаров"""
@@ -100,6 +116,9 @@ class Subcategory(models.Model):
         verbose_name = 'Подкатегория товаров'
         verbose_name_plural = 'Подкатегории товаров'
         ordering = ['subcat_id']
+
+    def __str__(self):
+        return self.subcat_id
 
 
 class Product(models.Model):
@@ -116,6 +135,9 @@ class Product(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
         ordering = ['pr_sku_id']
+
+    def __str__(self):
+        return self.pr_sku_id
 
 
 class Sale(models.Model):
@@ -137,3 +159,18 @@ class Sale(models.Model):
         verbose_name = 'Продажа'
         verbose_name_plural = 'Продажи'
         ordering = ['-date']
+
+    def to_dict(self):
+        return {'st_id': str(self.st_id),
+                'pr_sku_id': str(self.pr_sku_id),
+                'date': str(self.date),
+                'pr_sales_type_id': str(self.pr_sales_type_id),
+                'pr_sales_in_units': str(self.pr_sales_in_units),
+                'pr_promo_sales_in_units': str(self.pr_promo_sales_in_units),
+                'pr_sales_in_rub': str(self.pr_sales_in_rub),
+                'pr_promo_sales_in_rub': str(self.pr_promo_sales_in_rub),
+                }
+
+    def __str__(self):
+        return (f'Продано единиц товара {str(self.pr_sku_id)}: '
+                f'{str(self.pr_sales_in_units)}')
