@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'backend.apps.BackendConfig',
     'users.apps.UsersConfig',
+    'forecast.apps.ForecastConfig',
     'djoser',
     'rest_framework',
     'rest_framework_simplejwt',
