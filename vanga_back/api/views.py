@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from backend.models import (Category, City, Division, Group, Product,
                             Sale, Shop)
 from forecast.models import Forecast
@@ -6,7 +8,9 @@ from djoser import views
 from drf_spectacular.utils import (extend_schema, extend_schema_view,
                                    OpenApiParameter,)
 from drf_spectacular.types import OpenApiTypes
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import action, api_view
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .custom_paginators import MaxLimitLimitOffsetPagination
@@ -15,7 +19,7 @@ from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           GroupSerializer, ProductSerializer, SaleSerializer,
                           ShopSerializer, MeUserSerializer, TestGroupSerializer,
-                          TestShopSerializer)
+                          TestShopSerializer, TestSerializer)
 
 
 @extend_schema(tags=['Продажи'])
@@ -50,19 +54,19 @@ class GetProductSalesForPeriod(viewsets.ModelViewSet):
     '''
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
-    # filter_backends = (DateFilter, StoreFilter, SKUFilter)
+    filter_backends = (DateFilter, StoreFilter, SKUFilter)
     # filter_backends = (TestFilter,)
     pagination_class = MaxLimitLimitOffsetPagination
 
-    def get_queryset(self):
-        if self.request.query_params:
-            return Shop.objects.all()
-        return super().get_queryset()
+    # def get_queryset(self):
+    #     if self.request.query_params:
+    #         return Shop.objects.all()
+    #     return super().get_queryset()
 
-    def get_serializer_class(self):
-        if self.request.query_params:
-            return TestShopSerializer
-        return super().get_serializer_class()
+    # def get_serializer_class(self):
+    #     if self.request.query_params:
+    #         return TestShopSerializer
+    #     return super().get_serializer_class()
 
 
 @extend_schema(tags=['Пользователь'])
@@ -186,3 +190,38 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CityViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
+
+
+class TestView(viewsets.ModelViewSet):
+    queryset = Sale.objects.all()
+    serializer_class = TestSerializer
+    pagination_class = MaxLimitLimitOffsetPagination
+
+
+@extend_schema(
+        summary='TEST',
+        parameters=[
+            OpenApiParameter(
+                'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
+                default='2023-05-28'
+            ),
+            OpenApiParameter(
+                'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
+                default='2023-06-28'
+            ),
+            OpenApiParameter(
+                'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                default=6
+            ),
+            OpenApiParameter(
+                'sku', OpenApiTypes.INT, OpenApiParameter.QUERY, default=1186
+            ),
+        ]
+)
+@api_view(['GET'])
+def get_sales(request):
+    if not request.query_params:
+        serializer = TestShopSerializer(
+            Shop.objects.all(), many=True, context={'request': request}
+        )
+    return Response(serializer.data, status.HTTP_200_OK)

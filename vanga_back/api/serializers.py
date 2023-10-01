@@ -1,6 +1,9 @@
+import itertools
+
 from backend.models import (Category, City, Division, Group, Product,
                             Sale, Shop, Subcategory)
 from forecast.models import Forecast
+from django.core.paginator import Paginator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -129,7 +132,7 @@ class SaleSerializer(serializers.ModelSerializer):
 class TestProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ('id', 'pr_sku_id',)
 
 
 class TestSubcategorySerializer(serializers.ModelSerializer):
@@ -145,7 +148,7 @@ class TestCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'cat_id','categories',)
+        fields = ('id', 'cat_id', 'categories',)
 
 
 class TestGroupSerializer(serializers.ModelSerializer):
@@ -157,13 +160,43 @@ class TestGroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'group_id', 'groups')
 
 
+class TestSaleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sale
+        fields = '__all__'
+
+
 class TestShopSerializer(serializers.ModelSerializer):
-    stores = serializers.SlugRelatedField(
-        slug_field='stores',
-        queryset=Product.objects.all(),
-        many=True
-    )
+    # stores1 = serializers.SerializerMethodField('paginated_sales')
+    sku = serializers.SerializerMethodField('get_sku')
 
     class Meta:
         model = Shop
-        fields = ('id', 'st_id', 'stores')
+        fields = ('id', 'st_id', 'sku')
+
+    def get_sku(self, obj):
+        qwst = obj.stores.all()
+        pr_sku_ids = qwst.values_list('pr_sku_id')
+        qwst = list(itertools.chain(*pr_sku_ids))
+        qwst = Product.objects.filter(id__in=qwst)
+        serializer = TestProductSerializer(qwst, many=True)
+        return serializer.data
+
+    def paginated_sales(self, obj):
+        page_size = 100
+        paginator = Paginator(obj.stores.all(), page_size)
+        page = self.context['request'].query_params.get('page') or 1
+        stores = paginator.page(page)
+        serializer = TestSaleSerializer(stores, many=True)
+        return serializer.data
+
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        return res
+
+
+class TestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sale
+        fields = '__all__'
