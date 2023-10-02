@@ -134,10 +134,18 @@ class TestProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'pr_sku_id',)
+        fields = ('id', 'pr_sku_id', 'data',)
 
     def get_sales(self, obj):
-        ...
+        # queryset = obj.products.all()
+        page_size = 100
+        paginator = Paginator(obj.products.all(), page_size)
+        page = self.context['request'].query_params.get('page') or 1
+        sales = paginator.page(page)
+        serializer = TestSaleSerializer(
+            sales, many=True, context={'request': self.context['request']}
+        )
+        return serializer.data
 
 
 class TestSubcategorySerializer(serializers.ModelSerializer):
@@ -184,7 +192,9 @@ class TestShopSerializer(serializers.ModelSerializer):
         pr_sku_ids = qwst.values_list('pr_sku_id')
         qwst = list(itertools.chain(*pr_sku_ids))
         qwst = Product.objects.filter(id__in=qwst)
-        serializer = TestProductSerializer(qwst, many=True)
+        serializer = TestProductSerializer(
+            qwst, many=True, context={'request': self.context['request']}
+        )
         return serializer.data
 
     def paginated_sales(self, obj):
@@ -205,3 +215,32 @@ class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sale
         fields = '__all__'
+
+
+class NewShopSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Shop
+        fields = ('id', 'st_id',)
+
+
+class NewSerializer(serializers.ModelSerializer):
+    # id = serializers.PrimaryKeyRelatedField(read_only=True,
+    # source='st_id.id')
+    # st_id = serializers.SlugRelatedField(slug_field='st_id', read_only=True)
+    # pr_sku_id = serializers.SlugRelatedField(
+    #     slug_field='pr_sku_id', read_only=True
+    # )
+    # stores = serializers.SerializerMethodField('get_stores')
+
+    class Meta:
+        model = Shop
+        fields = ('id',)
+
+    # def get_stores(self, obj):
+    #     queryset = obj.st_id
+    #     serializer = NewShopSerializer(queryset)
+    #     return serializer.data
+
+
+# class N1Serializer(serializers.Serializer):

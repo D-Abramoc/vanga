@@ -6,7 +6,7 @@ from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
                     ProductViewSet, SaleViewSet, ShopViewSet,
                     CustomTokenViewSet, MeUserViewSet,
-                    GetProductSalesForPeriod, TestView, get_sales)
+                    GetProductSalesForPeriod, get_sales)
 
 app_name = 'api'
 
