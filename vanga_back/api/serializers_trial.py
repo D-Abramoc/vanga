@@ -3,7 +3,15 @@ from rest_framework import serializers
 from backend.models import Shop, Product, Sale
 
 
+class ProdSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ('pr_uom_id',)
+
+
 class SaleSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Sale
         fields = ('date', 'pr_sales_in_units',)
@@ -14,7 +22,7 @@ class GoodsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'pr_sku_id', 'sales',)
+        fields = ('id', 'pr_sku_id', 'pr_uom_id', 'sales',)
 
     def get_sales(self, obj):
         queryset = (
