@@ -9,7 +9,8 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
 from .custom_paginators import MaxLimitLimitOffsetPagination
 from .filters import DateFilter, StoreFilter, SKUFilter
@@ -88,6 +89,17 @@ class MeUserViewSet(views.UserViewSet):
 )
 class CustomUserViewSet(views.UserViewSet):
     '''Регистрация нового пользователя.'''
+    pass
+
+
+@extend_schema(tags=['Пользователь'])
+@extend_schema_view(
+    post=extend_schema(
+        summary='Обновление токена',
+    )
+)
+class CustomTokenRefreshViewSet(TokenRefreshView):
+    '''Обновление access токена.'''
     pass
 
 
