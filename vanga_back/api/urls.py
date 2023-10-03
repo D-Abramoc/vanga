@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .custom_routers import OnlyGetRouter
+from .routers import OnlyGetRouter
 from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
                     ProductViewSet, SaleViewSet, ShopViewSet,
@@ -32,8 +32,8 @@ urlpatterns = [
     path('auth/users/', CustomUserViewSet.as_view({'post': 'create'})),
     path('auth/jwt/create/', CustomTokenViewSet.as_view()),
     path('auth/users/me/', MeUserViewSet.as_view({'get': 'me'})),
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.jwt')),
+    # path('auth/', include('djoser.urls')),
+    # path('auth/', include('djoser.urls.jwt')),
     path('v1/sales/test', get_sales,),
     path(
         'v1/sales/period/', GetProductSalesForPeriod.as_view({'get': 'list'})

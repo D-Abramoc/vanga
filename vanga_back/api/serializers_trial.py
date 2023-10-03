@@ -42,7 +42,6 @@ class TSerializer(serializers.ModelSerializer):
         fields = ('id', 'st_id', 'goods',)
 
     def get_goods(self, obj):
-        # pruducts_unique = obj.stores.all().values('pr_sku_id').distinct()
         products_unique = (
             obj.stores.filter(date__range=[
                 self.context['query']['start_date'][0],

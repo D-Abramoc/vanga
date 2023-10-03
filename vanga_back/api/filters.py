@@ -1,14 +1,6 @@
 from rest_framework import filters
 
 
-class TestFilter(filters.BaseFilterBackend):
-    # def __init__(self, request, queryset) -> None:
-    #     super().__init__()
-
-    def filter_queryset(self, request, queryset, view):
-        return queryset
-
-
 class DateFilter(filters.BaseFilterBackend):
     '''Фильтр по датам.'''
 

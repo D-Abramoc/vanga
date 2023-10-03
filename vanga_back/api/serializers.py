@@ -137,7 +137,6 @@ class TestProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'pr_sku_id', 'data',)
 
     def get_sales(self, obj):
-        # queryset = obj.products.all()
         page_size = 100
         paginator = Paginator(obj.products.all(), page_size)
         page = self.context['request'].query_params.get('page') or 1
@@ -166,7 +165,6 @@ class TestCategorySerializer(serializers.ModelSerializer):
 
 class TestGroupSerializer(serializers.ModelSerializer):
     groups = TestCategorySerializer(many=True)
-    # categories = SubcategorySerializer(many=True)
 
     class Meta:
         model = Group
@@ -180,7 +178,6 @@ class TestSaleSerializer(serializers.ModelSerializer):
 
 
 class TestShopSerializer(serializers.ModelSerializer):
-    # stores1 = serializers.SerializerMethodField('paginated_sales')
     sku = serializers.SerializerMethodField('get_sku')
 
     class Meta:
@@ -222,25 +219,3 @@ class NewShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = ('id', 'st_id',)
-
-
-class NewSerializer(serializers.ModelSerializer):
-    # id = serializers.PrimaryKeyRelatedField(read_only=True,
-    # source='st_id.id')
-    # st_id = serializers.SlugRelatedField(slug_field='st_id', read_only=True)
-    # pr_sku_id = serializers.SlugRelatedField(
-    #     slug_field='pr_sku_id', read_only=True
-    # )
-    # stores = serializers.SerializerMethodField('get_stores')
-
-    class Meta:
-        model = Shop
-        fields = ('id',)
-
-    # def get_stores(self, obj):
-    #     queryset = obj.st_id
-    #     serializer = NewShopSerializer(queryset)
-    #     return serializer.data
-
-
-# class N1Serializer(serializers.Serializer):

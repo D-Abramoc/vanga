@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .custom_paginators import MaxLimitLimitOffsetPagination
+from .paginators import MaxLimitLimitOffsetPagination
 from .filters import DateFilter, StoreFilter, SKUFilter
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
@@ -55,18 +55,7 @@ class GetProductSalesForPeriod(viewsets.ModelViewSet):
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
     filter_backends = (DateFilter, StoreFilter, SKUFilter)
-    # filter_backends = (TestFilter,)
     pagination_class = MaxLimitLimitOffsetPagination
-
-    # def get_queryset(self):
-    #     if self.request.query_params:
-    #         return Shop.objects.all()
-    #     return super().get_queryset()
-
-    # def get_serializer_class(self):
-    #     if self.request.query_params:
-    #         return TestShopSerializer
-    #     return super().get_serializer_class()
 
 
 @extend_schema(tags=['Пользователь'])
@@ -179,7 +168,6 @@ class ShopViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Города присутствия'])
@@ -227,9 +215,6 @@ class TestView(viewsets.ModelViewSet):
 @api_view(['GET'])
 def get_sales(request):
     if not request.query_params:
-        # serializer = TestShopSerializer(
-        #     Shop.objects.all(), many=True, context={'request': request}
-        # )
         return Response('При запросе без фильтров всё упадёт.')
     rqps = [
         (key, request.query_params.getlist(key))
@@ -237,19 +222,5 @@ def get_sales(request):
     ]
     qps = dict(rqps)
     queryset = Shop.objects.filter(id__in=qps['store'])
-    # queryset = Shop.objects.all()
-    # if 'store' in request.query_params:
-    #     filter = StoreFilter()
-    #     queryset = filter.filter_queryset(request, queryset, get_sales)
-    #     serializer_shop = NewSerializer(queryset, many=True)
-    # queryset = Sale.objects.filter(st_id__in=queryset)
-    # if 'start_date' in request.query_params:
-    #     filter = DateFilter()
-    #     queryset = filter.filter_queryset(
-    #         request, queryset, get_sales
-    #     )
-    # if 'sku' in request.query_params:
-    #     filter = SKUFilter()
-    #     queryset = filter.filter_queryset(request, queryset, get_sales)
     serializer = TSerializer(queryset, many=True, context={'query': qps})
     return Response(serializer.data, status.HTTP_200_OK)
