@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import permissions, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -5,6 +6,14 @@ from rest_framework.response import Response
 from .serializers_logout import RefreshTokenSerializer
 
 
+@extend_schema(tags=['Пользователь'])
+@extend_schema_view(
+    post=extend_schema(
+        summary='Логаут',
+        description='''Удаляет refresh token. Для логаута на фронте надо
+        удалить access token. '''
+    )
+)
 class LogoutView(GenericAPIView):
     serializer_class = RefreshTokenSerializer
     permission_classes = (permissions.IsAuthenticated, )

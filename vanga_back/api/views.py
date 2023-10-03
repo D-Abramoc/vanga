@@ -12,50 +12,48 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .paginators import MaxLimitLimitOffsetPagination
-from .filters import DateFilter, StoreFilter, SKUFilter
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           ProductSerializer, SaleSerializer,
                           ShopSerializer, MeUserSerializer,
-                          TestGroupSerializer,
-                          TestSerializer,)
+                          TestGroupSerializer,)
 from .serializers_trial import TSerializer
 
 
-@extend_schema(tags=['Продажи'])
-@extend_schema_view(
-    list=extend_schema(
-        summary='Получить продажи определённого товара за период',
-        parameters=[
-            OpenApiParameter(
-                'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
-                default='2023-05-28'
-            ),
-            OpenApiParameter(
-                'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
-                default='2023-06-28'
-            ),
-            OpenApiParameter(
-                'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
-                default=6
-            ),
-            OpenApiParameter(
-                'sku', OpenApiTypes.INT, OpenApiParameter.QUERY, default=1186
-            ),
-        ]
-    )
-)
-class GetProductSalesForPeriod(viewsets.ModelViewSet):
-    '''
-    Возвращает данные о продажах выбранного товара.
+# @extend_schema(tags=['Продажи'])
+# @extend_schema_view(
+#     list=extend_schema(
+#         summary='Получить продажи определённого товара за период',
+#         parameters=[
+#             OpenApiParameter(
+#                 'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
+#                 default='2023-05-28'
+#             ),
+#             OpenApiParameter(
+#                 'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
+#                 default='2023-06-28'
+#             ),
+#             OpenApiParameter(
+#                 'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
+#                 default=6
+#             ),
+#             OpenApiParameter(
+#                 'sku', OpenApiTypes.INT, OpenApiParameter.QUERY, default=1186
+#             ),
+#         ]
+#     )
+# )
+# class GetProductSalesForPeriod(viewsets.ModelViewSet):
+#     '''
+#     Возвращает данные о продажах выбранного товара.
 
-    На вход получает товар, магазин, дату от которой смотрим
-    и количество дней на сколько смотрим.
-    '''
-    queryset = Sale.objects.all()
-    serializer_class = SaleSerializer
-    filter_backends = (DateFilter, StoreFilter, SKUFilter)
-    pagination_class = MaxLimitLimitOffsetPagination
+#     На вход получает товар, магазин, дату от которой смотрим
+#     и количество дней на сколько смотрим.
+#     '''
+#     queryset = Sale.objects.all()
+#     serializer_class = SaleSerializer
+#     filter_backends = (DateFilter, StoreFilter, SKUFilter)
+#     pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Пользователь'])
@@ -181,13 +179,8 @@ class CityViewSet(viewsets.ModelViewSet):
     serializer_class = CitySerializer
 
 
-class TestView(viewsets.ModelViewSet):
-    queryset = Sale.objects.all()
-    serializer_class = TestSerializer
-    pagination_class = MaxLimitLimitOffsetPagination
-
-
 @extend_schema(
+        tags=['Продажи'],
         summary='Получить продажи за период по паре магазин-товар',
         description='''Все поля пока обязательные, но если успею добавлю
         гибкости. Магазины и товары выбираются по id. Можно выбирать по
@@ -203,12 +196,12 @@ class TestView(viewsets.ModelViewSet):
                 default='2023-06-28', required=True
             ),
             OpenApiParameter(
-                'store', OpenApiTypes.ANY, OpenApiParameter.QUERY,
-                default=[6, 7], required=True
+                'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                default=6, required=True
             ),
             OpenApiParameter(
-                'sku', OpenApiTypes.ANY, OpenApiParameter.QUERY,
-                default=[1186, 30], required=True
+                'sku', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                default=1186, required=True
             ),
         ]
 )
