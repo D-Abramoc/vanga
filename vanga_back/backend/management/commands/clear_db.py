@@ -14,6 +14,6 @@ class Command(BaseCommand):
         # m.Category.objects.all().delete()
         # m.Subcategory.objects.all().delete()
         # m.Product.objects.all().delete()
-        # m.Sale.objects.all().delete()
-        Forecast.objects.all().delete()
+        m.Sale.objects.all().delete()
+        # Forecast.objects.all().delete()
         print('База очищена')

@@ -111,6 +111,7 @@ class CustomTokenViewSet(TokenObtainPairView):
 class ForecastViewSet(viewsets.ModelViewSet):
     queryset = Forecast.objects.all()
     serializer_class = ForecastSerializer
+    pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Продажи'])
