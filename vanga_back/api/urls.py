@@ -4,7 +4,7 @@ from rest_framework import routers
 from .routers import OnlyGetRouter
 from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
-                    ProductViewSet, SaleViewSet, ShopViewSet,
+                    ProductViewSet, ShopViewSet,
                     CustomTokenViewSet, MeUserViewSet,
                     GetSalesViewSet, RefreshTokenViewSet)
 from .views_logout import LogoutView
