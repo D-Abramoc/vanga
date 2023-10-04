@@ -18,7 +18,7 @@ from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           ProductSerializer, SaleSerializer,
                           ShopSerializer, MeUserSerializer,
-                          TestGroupSerializer,)
+                          TestGroupSerializer, GroupSerializer)
 from .serializers_trial import StoreProductPeriodSerializer
 from .utils import get_query_params
 
@@ -111,7 +111,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 )
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
-    serializer_class = TestGroupSerializer
+    serializer_class = GroupSerializer
 
 
 @extend_schema(tags=['Дивизионы'])
