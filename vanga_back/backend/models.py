@@ -19,7 +19,6 @@ class City(models.Model):
         return self.city_id
 
 
-
 class Division(models.Model):
     """Модель дивизиона"""
     division_code_id = models.CharField('Хэш id дивизиона',

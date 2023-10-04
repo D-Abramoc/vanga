@@ -1,10 +1,12 @@
+from http import HTTPStatus
 
 from backend.models import (Category, City, Division, Group, Product,
                             Sale, Shop)
 from forecast.models import Forecast
 from djoser import views
 from drf_spectacular.utils import (extend_schema, extend_schema_view,
-                                   OpenApiParameter,)
+                                   OpenApiParameter, OpenApiResponse,
+                                   OpenApiExample)
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets, serializers
 from rest_framework_simplejwt.views import (
@@ -216,7 +218,10 @@ class CityViewSet(viewsets.ModelViewSet):
                 'sku', OpenApiTypes.INT, OpenApiParameter.QUERY,
                 default=1186, required=False
             ),
-        ]
+        ],
+        responses={
+            (200, 'application/json'): 2
+        }
 )
 class GetSalesViewSet(viewsets.ModelViewSet):
     serializer_class = StoreProductPeriodSerializer
