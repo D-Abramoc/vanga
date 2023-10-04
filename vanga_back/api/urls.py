@@ -15,7 +15,7 @@ router_v1 = routers.DefaultRouter()
 router_v1_only_get = OnlyGetRouter()
 
 router_v1.register(r'forecasts', ForecastViewSet, basename='forecasts')
-router_v1.register('sales', SaleViewSet, basename='sales')
+# router_v1.register('sales', SaleViewSet, basename='sales')
 router_v1_only_get.register(r'shops', ShopViewSet, basename='shops')
 router_v1_only_get.register(r'products', ProductViewSet, basename='products')
 router_v1_only_get.register(r'cities', CityViewSet, basename='cities')

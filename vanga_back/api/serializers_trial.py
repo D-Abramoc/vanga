@@ -45,7 +45,9 @@ class StoreProductPeriodSerializer(serializers.ModelSerializer):
 
     def get_products(self, obj):
         params = get_query_params(self.context.get('request').query_params)
-        if any('start_date' or 'end_date' or 'sku') not in params:
+        if ('start_date' not in params
+                or 'end_date' not in params
+                or 'sku' not in params):
             raise serializers.ValidationError(
                 'Отсутствует одно или несколько обязательных полей'
             )

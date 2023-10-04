@@ -100,6 +100,7 @@ class ForecastViewSet(viewsets.ModelViewSet):
     queryset = Forecast.objects.all()
     serializer_class = ForecastSerializer
     pagination_class = MaxLimitLimitOffsetPagination
+    http_method_names = ('get', 'post')
 
 
 @extend_schema(tags=['Продажи'])
