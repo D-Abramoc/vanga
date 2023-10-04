@@ -6,7 +6,7 @@ from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
                     ProductViewSet, SaleViewSet, ShopViewSet,
                     CustomTokenViewSet, MeUserViewSet,
-                    GetSalesViewSet)
+                    GetSalesViewSet, RefreshTokenViewSet)
 from .views_logout import LogoutView
 
 app_name = 'api'
@@ -31,6 +31,7 @@ urlpatterns = [
     path('auth/logout/', LogoutView.as_view()),
     path('auth/users/', CustomUserViewSet.as_view({'post': 'create'})),
     path('auth/jwt/create/', CustomTokenViewSet.as_view()),
+    path('auth/jwt/refresh/', RefreshTokenViewSet.as_view()),
     path('auth/users/me/', MeUserViewSet.as_view({'get': 'me'})),
     # path('auth/', include('djoser.urls')),
     # path('auth/', include('djoser.urls.jwt')),

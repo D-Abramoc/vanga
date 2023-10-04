@@ -9,7 +9,7 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .paginators import MaxLimitLimitOffsetPagination
 from .serializers import (CategorySerializer, CitySerializer,
@@ -87,6 +87,17 @@ class CustomUserViewSet(views.UserViewSet):
 )
 class CustomTokenViewSet(TokenObtainPairView):
     '''Получение токена аутентификации пользователя.'''
+    pass
+
+
+@extend_schema(tags=['Пользователь'])
+@extend_schema_view(
+    post=extend_schema(
+        summary='Обновить токен'
+    )
+)
+class RefreshTokenViewSet(TokenRefreshView):
+    '''Обновление access token'''
     pass
 
 
