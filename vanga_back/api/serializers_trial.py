@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from backend.models import Shop, Product, Sale
 
+from .utils import get_query_params
+
 
 class ProdSerializer(serializers.ModelSerializer):
 
@@ -42,16 +44,17 @@ class TSerializer(serializers.ModelSerializer):
         fields = ('id', 'st_id', 'goods',)
 
     def get_goods(self, obj):
+        params = get_query_params(self.context.get('request').query_params)
         products_unique = (
             obj.stores.filter(date__range=[
-                self.context['query']['start_date'][0],
-                self.context['query']['end_date'][0]
+                params['start_date'][0],
+                params['end_date'][0]
             ])
-            .filter(pr_sku_id__in=self.context['query']['sku'])
+            .filter(pr_sku_id__in=params['sku'])
             .values('pr_sku_id').distinct()
         )
         products_id = [i['pr_sku_id'] for i in products_unique]
         queryset = Product.objects.filter(id__in=products_id).order_by('id')
         serializer = GoodsSerializer(queryset, many=True,
-                                     context={'query': self.context['query']})
+                                     context={'query': params})
         return serializer.data

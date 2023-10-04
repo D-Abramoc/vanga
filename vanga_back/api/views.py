@@ -6,7 +6,7 @@ from djoser import views
 from drf_spectacular.utils import (extend_schema, extend_schema_view,
                                    OpenApiParameter,)
 from drf_spectacular.types import OpenApiTypes
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -18,6 +18,7 @@ from .serializers import (CategorySerializer, CitySerializer,
                           ShopSerializer, MeUserSerializer,
                           TestGroupSerializer,)
 from .serializers_trial import TSerializer
+from .utils import get_query_params
 
 
 # @extend_schema(tags=['Продажи'])
@@ -189,31 +190,39 @@ class CityViewSet(viewsets.ModelViewSet):
         parameters=[
             OpenApiParameter(
                 'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
-                default='2023-05-28', required=True
+                default='2023-05-28', required=False
             ),
             OpenApiParameter(
                 'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
-                default='2023-06-28', required=True
+                default='2023-06-28', required=False
             ),
             OpenApiParameter(
                 'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
-                default=6, required=True
+                default=6, required=False
             ),
             OpenApiParameter(
                 'sku', OpenApiTypes.INT, OpenApiParameter.QUERY,
-                default=1186, required=True
+                default=1186, required=False
             ),
         ]
 )
-@api_view(['GET'])
-def get_sales(request):
-    if not request.query_params:
-        return Response('При запросе без фильтров всё упадёт.')
-    rqps = [
-        (key, request.query_params.getlist(key))
-        for key in request.query_params
-    ]
-    qps = dict(rqps)
-    queryset = Shop.objects.filter(id__in=qps['store'])
-    serializer = TSerializer(queryset, many=True, context={'query': qps})
-    return Response(serializer.data, status.HTTP_200_OK)
+class GetSalesViewSet(viewsets.ModelViewSet):
+    serializer_class = TSerializer
+
+    def get_queryset(self):
+        if not self.request.query_params:
+            raise serializers.ValidationError('An ass happend!')
+        request_query_params = get_query_params(self.request.query_params)
+        return Shop.objects.filter(id__in=request_query_params['store'])
+# @api_view(['GET'])
+# def get_sales(request):
+#     if not request.query_params:
+#         return Response('При запросе без фильтров всё упадёт.')
+#     rqps = [
+#         (key, request.query_params.getlist(key))
+#         for key in request.query_params
+#     ]
+#     qps = dict(rqps)
+#     queryset = Shop.objects.filter(id__in=qps['store'])
+#     serializer = TSerializer(queryset, many=True, context={'query': qps})
+#     return Response(serializer.data, status.HTTP_200_OK)
