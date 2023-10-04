@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from rest_framework import serializers
 
 from backend.models import Shop, Product, Sale
@@ -43,15 +44,17 @@ class StoreProductPeriodSerializer(serializers.ModelSerializer):
         model = Shop
         fields = ('id', 'st_id', 'products',)
 
-    def get_products(self, obj):
-        params = get_query_params(self.context.get('request').query_params)
+    def get_products(self, obj: Shop):
+        params: dict[str, list[str] | str] = get_query_params(
+            self.context.get('request').query_params
+        )
         if ('start_date' not in params
                 or 'end_date' not in params
                 or 'sku' not in params):
             raise serializers.ValidationError(
                 'Отсутствует одно или несколько обязательных полей'
             )
-        products_unique = (
+        products_unique: QuerySet = (
             obj.stores.filter(date__range=[
                 params['start_date'][0],
                 params['end_date']

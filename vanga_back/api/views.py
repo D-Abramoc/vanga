@@ -1,4 +1,4 @@
-from http import HTTPStatus
+from typing import Union
 
 from backend.models import (Category, City, Division, Group, Product,
                             Sale, Shop)
@@ -21,42 +21,6 @@ from .serializers import (CategorySerializer, CitySerializer,
                           TestGroupSerializer,)
 from .serializers_trial import StoreProductPeriodSerializer
 from .utils import get_query_params
-
-
-# @extend_schema(tags=['Продажи'])
-# @extend_schema_view(
-#     list=extend_schema(
-#         summary='Получить продажи определённого товара за период',
-#         parameters=[
-#             OpenApiParameter(
-#                 'start_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
-#                 default='2023-05-28'
-#             ),
-#             OpenApiParameter(
-#                 'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
-#                 default='2023-06-28'
-#             ),
-#             OpenApiParameter(
-#                 'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
-#                 default=6
-#             ),
-#             OpenApiParameter(
-#                 'sku', OpenApiTypes.INT, OpenApiParameter.QUERY, default=1186
-#             ),
-#         ]
-#     )
-# )
-# class GetProductSalesForPeriod(viewsets.ModelViewSet):
-#     '''
-#     Возвращает данные о продажах выбранного товара.
-
-#     На вход получает товар, магазин, дату от которой смотрим
-#     и количество дней на сколько смотрим.
-#     '''
-#     queryset = Sale.objects.all()
-#     serializer_class = SaleSerializer
-#     filter_backends = (DateFilter, StoreFilter, SKUFilter)
-#     pagination_class = MaxLimitLimitOffsetPagination
 
 
 @extend_schema(tags=['Пользователь'])
@@ -195,7 +159,9 @@ class CityViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema(
-        tags=['Продажи'],
+        tags=['Продажи'])
+@extend_schema_view(
+    list=extend_schema(
         summary='Получить продажи за период по паре магазин-товар',
         description='''Все поля пока обязательные, но если успею добавлю
         гибкости. Магазины и товары выбираются по id. Можно выбирать по
@@ -219,9 +185,10 @@ class CityViewSet(viewsets.ModelViewSet):
                 default=1186, required=False
             ),
         ],
-        responses={
-            (200, 'application/json'): 2
-        }
+        # external_docs={
+        #     'a': 'b'
+        # }
+    )
 )
 class GetSalesViewSet(viewsets.ModelViewSet):
     serializer_class = StoreProductPeriodSerializer
@@ -229,7 +196,9 @@ class GetSalesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if 'store' not in self.request.query_params:
             raise serializers.ValidationError('An ass happend!')
-        request_query_params = get_query_params(self.request.query_params)
+        request_query_params: dict[str, list[str] | str] = (
+            get_query_params(self.request.query_params)
+        )
         return Shop.objects.filter(id__in=request_query_params['store'])
 # @api_view(['GET'])
 # def get_sales(request):
