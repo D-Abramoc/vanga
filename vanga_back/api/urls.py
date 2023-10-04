@@ -34,7 +34,7 @@ urlpatterns = [
     path('auth/users/me/', MeUserViewSet.as_view({'get': 'me'})),
     # path('auth/', include('djoser.urls')),
     # path('auth/', include('djoser.urls.jwt')),
-    path('v1/sales/test', GetSalesViewSet.as_view({'get': 'list'}),),
+    path('v1/sales/store_product_period', GetSalesViewSet.as_view({'get': 'list'}),),
     path('v1/', include(router_v1_only_get.urls)),
     path('v1/', include(router_v1.urls)),
 ]
