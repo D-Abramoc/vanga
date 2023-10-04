@@ -28,27 +28,31 @@ class GoodsSerializer(serializers.ModelSerializer):
 
     def get_sales(self, obj):
         queryset = (
-            obj.products.filter(st_id__in=self.context['query']['store'])
-            .filter(date__range=[self.context['query']['start_date'][0],
-                                 self.context['query']['end_date'][0]])
+            obj.products.filter(st_id__in=self.context['params']['store'])
+            .filter(date__range=[self.context['params']['start_date'][0],
+                                 self.context['params']['end_date']])
         )
         serializer = SaleSerializer(queryset, many=True)
         return serializer.data
 
 
-class TSerializer(serializers.ModelSerializer):
-    goods = serializers.SerializerMethodField('get_goods')
+class StoreProductPeriodSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField('get_products')
 
     class Meta:
         model = Shop
-        fields = ('id', 'st_id', 'goods',)
+        fields = ('id', 'st_id', 'products',)
 
-    def get_goods(self, obj):
+    def get_products(self, obj):
         params = get_query_params(self.context.get('request').query_params)
+        if any('start_date' or 'end_date' or 'sku') not in params:
+            raise serializers.ValidationError(
+                'Отсутствует одно или несколько обязательных полей'
+            )
         products_unique = (
             obj.stores.filter(date__range=[
                 params['start_date'][0],
-                params['end_date'][0]
+                params['end_date']
             ])
             .filter(pr_sku_id__in=params['sku'])
             .values('pr_sku_id').distinct()
@@ -56,5 +60,5 @@ class TSerializer(serializers.ModelSerializer):
         products_id = [i['pr_sku_id'] for i in products_unique]
         queryset = Product.objects.filter(id__in=products_id).order_by('id')
         serializer = GoodsSerializer(queryset, many=True,
-                                     context={'query': params})
+                                     context={'params': params})
         return serializer.data

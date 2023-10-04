@@ -17,7 +17,7 @@ from .serializers import (CategorySerializer, CitySerializer,
                           ProductSerializer, SaleSerializer,
                           ShopSerializer, MeUserSerializer,
                           TestGroupSerializer,)
-from .serializers_trial import TSerializer
+from .serializers_trial import StoreProductPeriodSerializer
 from .utils import get_query_params
 
 
@@ -193,8 +193,8 @@ class CityViewSet(viewsets.ModelViewSet):
                 default='2023-05-28', required=False
             ),
             OpenApiParameter(
-                'end_date', OpenApiTypes.DATETIME, OpenApiParameter.QUERY,
-                default='2023-06-28', required=False
+                'time_delta', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                default=14, required=False
             ),
             OpenApiParameter(
                 'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
@@ -207,10 +207,10 @@ class CityViewSet(viewsets.ModelViewSet):
         ]
 )
 class GetSalesViewSet(viewsets.ModelViewSet):
-    serializer_class = TSerializer
+    serializer_class = StoreProductPeriodSerializer
 
     def get_queryset(self):
-        if not self.request.query_params:
+        if 'store' not in self.request.query_params:
             raise serializers.ValidationError('An ass happend!')
         request_query_params = get_query_params(self.request.query_params)
         return Shop.objects.filter(id__in=request_query_params['store'])
