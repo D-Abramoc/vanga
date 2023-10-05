@@ -4,7 +4,7 @@ from rest_framework import routers
 from .routers import OnlyGetRouter
 from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
-                    ProductViewSet, ShopViewSet,
+                    ProductViewSet, ShopViewSet, SaleViewSet,
                     CustomTokenViewSet, MeUserViewSet,
                     GetSalesViewSet, RefreshTokenViewSet)
 from .views_logout import LogoutView
@@ -15,7 +15,7 @@ router_v1 = routers.DefaultRouter()
 router_v1_only_get = OnlyGetRouter()
 
 router_v1.register(r'forecasts', ForecastViewSet, basename='forecasts')
-# router_v1.register('sales', SaleViewSet, basename='sales')
+router_v1_only_get.register('sales', SaleViewSet, basename='sales')
 router_v1_only_get.register(r'shops', ShopViewSet, basename='shops')
 router_v1_only_get.register(r'products', ProductViewSet, basename='products')
 router_v1_only_get.register(r'cities', CityViewSet, basename='cities')

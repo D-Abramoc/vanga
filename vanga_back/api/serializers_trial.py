@@ -17,7 +17,7 @@ class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ('date', 'pr_sales_in_units',)
+        fields = ('date', 'pr_sales_in_units', 'pr_sku_id')
 
 
 class GoodsSerializer(serializers.ModelSerializer):
