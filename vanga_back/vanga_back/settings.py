@@ -151,3 +151,11 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False
 }
+
+LOGGING = {
+    'django.db.backends': {
+        'level': 'DEBUG',
+        'handlers': ['console'],
+        'propagate': False
+    }
+}
