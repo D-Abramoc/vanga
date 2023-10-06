@@ -3,7 +3,7 @@ from backend import models as m
 from django.core.management.base import BaseCommand
 
 
-from forecast.functions import send_sales_to_ds
+# from forecast.functions import send_sales_to_ds
 
 
 BATCH_SIZE = 10000
@@ -39,12 +39,12 @@ def import_sales_df(filename) -> None:
         )
         if len(sales) == BATCH_SIZE:
             m.Sale.objects.bulk_create(sales)
-            send_sales_to_ds(sales)
+            # send_sales_to_ds(sales)
             sales = []
             imported_rows += BATCH_SIZE
             print(f'Импортировано {imported_rows} строк данных о продажах')
     m.Sale.objects.bulk_create(sales)
-    send_sales_to_ds(sales)
+    # send_sales_to_ds(sales)
     print('Импорт продаж завершён')
 
 
