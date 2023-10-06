@@ -32,6 +32,7 @@ class GoodsSerializer(serializers.ModelSerializer):
             obj.sales.filter(st_id__in=self.context['params']['store'])
             .filter(date__range=[self.context['params']['start_date'][0],
                                  self.context['params']['end_date']])
+            .filter(pr_sales_type_id=True)
         )
         serializer = SaleSerializer(queryset, many=True)
         return serializer.data
@@ -59,8 +60,7 @@ class StoreProductPeriodSerializer(serializers.ModelSerializer):
                 params['start_date'][0],
                 params['end_date']
             ])
-            .filter(pr_sku_id__in=params['sku'])
-            .exclude(pr_sales_type_id=False)
+            .filter(pr_sku_id__in=params['sku'], pr_sales_type_id=False)
             .values('pr_sku_id').distinct()
         )
         products_id = [i['pr_sku_id'] for i in products_unique]
