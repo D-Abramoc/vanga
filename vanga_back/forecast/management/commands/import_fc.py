@@ -4,6 +4,7 @@ from backend import models as m
 from django.core.management.base import BaseCommand
 from datetime import datetime
 
+
 def import_forecast():
     """Импорт прогнозных данных"""
     sales_submission = pd.read_csv(r'data/sales_submission.csv')

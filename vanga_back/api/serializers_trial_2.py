@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
 from backend.models import (Shop, Group, Product, Subcategory, Category,
                             Sale)
@@ -10,6 +11,23 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            'Valid Example',
+            value={
+                "id": 12,
+                "st_id": "084a8a9aa8cced9175bd07bc44998e75",
+                "groups": [
+                    {
+                        "id": 1,
+                        "group_id": "c74d97b01eae257e44aa9d5bade97baf"
+                    },
+                ]
+            }
+        )
+    ]
+)
 class GroupWithSalesSerializer(serializers.ModelSerializer):
     groups = serializers.SerializerMethodField('get_groups')
 

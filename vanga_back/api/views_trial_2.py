@@ -10,8 +10,11 @@ from .serializers_trial_2 import (GroupWithSalesSerializer,
 from .filters_trial_2 import ShopFilter
 
 
+@extend_schema(tags=['Фильтры'])
 @extend_schema_view(
     list=extend_schema(
+        summary='Получить группы',
+        description='Возвращает группы в которых были продажи товаров.',
         parameters=[
             OpenApiParameter(
                 'store', OpenApiTypes.INT, OpenApiParameter.QUERY
@@ -25,8 +28,12 @@ class GroupsWithSalesInShop(viewsets.ModelViewSet):
     filter_backends = (ShopFilter,)
 
 
+@extend_schema(tags=['Фильтры'])
 @extend_schema_view(
     list=extend_schema(
+        summary='Получить категории.',
+        description=('Возвращает категории в которых были продажи. '
+                     'id магазина обязательный параметр'),
         parameters=[
             OpenApiParameter(
                 'store', OpenApiTypes.INT, OpenApiParameter.QUERY,
@@ -44,8 +51,11 @@ class CategoriesWithSalesInShop(viewsets.ModelViewSet):
     filter_backends = (ShopFilter, )
 
 
+@extend_schema(tags=['Фильтры'])
 @extend_schema_view(
     list=extend_schema(
+        summary='Получить подкатегории',
+        description='Возвращает подкатегории, в которых были продажи',
         parameters=[
             OpenApiParameter(
                 'store', OpenApiTypes.INT, OpenApiParameter.QUERY,

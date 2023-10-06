@@ -29,7 +29,7 @@ class GoodsSerializer(serializers.ModelSerializer):
 
     def get_sales(self, obj):
         queryset = (
-            obj.products.filter(st_id__in=self.context['params']['store'])
+            obj.sales.filter(st_id__in=self.context['params']['store'])
             .filter(date__range=[self.context['params']['start_date'][0],
                                  self.context['params']['end_date']])
         )
@@ -55,11 +55,12 @@ class StoreProductPeriodSerializer(serializers.ModelSerializer):
                 'Отсутствует одно или несколько обязательных полей'
             )
         products_unique: QuerySet = (
-            obj.stores.filter(date__range=[
+            obj.sales.filter(date__range=[
                 params['start_date'][0],
                 params['end_date']
             ])
             .filter(pr_sku_id__in=params['sku'])
+            .exclude(pr_sales_type_id=False)
             .values('pr_sku_id').distinct()
         )
         products_id = [i['pr_sku_id'] for i in products_unique]
