@@ -46,7 +46,9 @@ class GroupCategorySerializer(serializers.ModelSerializer):
 
     def get_categories(self, obj):
         '''Возвращает категории по которым в магазине были продажи'''
-        sales = Sale.objects.filter(st_id=self.context['shop'], pr_sales_type_id=False)
+        sales = Sale.objects.filter(
+            st_id=self.context['shop'], pr_sales_type_id=False
+        )
         products = Product.objects.filter(sales__in=sales)
         subcategories = Subcategory.objects.filter(products__in=products)
         queryset = (
@@ -77,7 +79,9 @@ class CategoriesWithSalesSerializer(serializers.ModelSerializer):
             .distinct().order_by('id')
         )
         if 'group' in self.context['request'].query_params:
-            queryset = queryset.filter(id=int(self.context['request'].query_params['group']))
+            queryset = queryset.filter(
+                id=int(self.context['request'].query_params['group'])
+            )
         serialiser = GroupCategorySerializer(
             queryset, many=True, context={
                 'shop': obj
@@ -111,6 +115,7 @@ class CategorySubSerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'cat_id', 'group_id', 'subcategories')
         list_serializer_class = FilterSubcategoriesSerialiser
+
 
 class SubcategoriesWithSalesSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField('get_categories')

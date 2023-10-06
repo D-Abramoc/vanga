@@ -1,8 +1,6 @@
 import time
 from typing import Any
 
-from django.utils.deprecation import MiddlewareMixin
-
 
 class RequestTimeMiddleware:
     def __init__(self, get_response) -> None:

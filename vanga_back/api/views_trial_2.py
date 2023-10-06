@@ -1,14 +1,13 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
 from drf_spectacular.utils import (extend_schema, extend_schema_view,
                                    OpenApiParameter,)
 from drf_spectacular.types import OpenApiTypes
 
-from backend.models import Shop, Group
+from backend.models import Shop
 from .serializers_trial_2 import (GroupWithSalesSerializer,
                                   CategoriesWithSalesSerializer,
                                   SubcategoriesWithSalesSerializer)
-from .filters_trial_2 import ShopFilter, GroupFilter
+from .filters_trial_2 import ShopFilter
 
 
 @extend_schema_view(
