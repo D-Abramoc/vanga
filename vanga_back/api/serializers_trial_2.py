@@ -92,12 +92,18 @@ class SubcategoriesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CategorySubSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
 
 class SubcategoriesWithSalesSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField('get_categories')
 
     class Meta:
-        model = Group
+        model = Category
         fields = ('categories',)
 
     def get_categories(self, obj):
@@ -105,7 +111,14 @@ class SubcategoriesWithSalesSerializer(serializers.ModelSerializer):
         sales = Sale.objects.filter(st_id=obj, pr_sales_type_id=False)
         products = Product.objects.filter(sales__in=sales)
         subcategories = Subcategory.objects.filter(products__in=products)
-        categories = Category.objects.filter(subcategories__in=subcategories)
-        queryset = Group.objects.filter(categories__in=categories).distinct()
-        serialiser = GroupSerializer(queryset, many=True)
-        return serialiser.data
+        queryset = (
+            Category.objects
+            .filter(subcategories__in=subcategories)
+            .distinct()
+        )
+        if 'group' in self.context['request'].query_params:
+            queryset = queryset.filter(
+                id=int(self.context['request'].query_params['group'])
+            )
+        serializer = CategorySubSerializer(queryset, many=True)
+        return serializer.data

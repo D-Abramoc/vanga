@@ -55,6 +55,9 @@ class CategoriesWithSalesInShop(viewsets.ModelViewSet):
             OpenApiParameter(
                 'group', OpenApiTypes.INT, OpenApiParameter.QUERY,
                 required=True
+            ),
+            OpenApiParameter(
+                'category', OpenApiTypes.INT, OpenApiParameter.QUERY
             )
         ]
     )
@@ -62,4 +65,4 @@ class CategoriesWithSalesInShop(viewsets.ModelViewSet):
 class SubcategoriesWithSalesInShop(viewsets.ModelViewSet):
     serializer_class = SubcategoriesWithSalesSerializer
     queryset = Shop.objects.all()
-    filter_backends = (ShopFilter, GroupFilter)
+    filter_backends = (ShopFilter,)
