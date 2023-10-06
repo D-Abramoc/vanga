@@ -88,7 +88,7 @@ class Category(models.Model):
     """Модель категории товаров"""
     group_id = models.ForeignKey(Group,
                                  on_delete=models.CASCADE,
-                                 related_name='groups')
+                                 related_name='categories')
     cat_id = models.CharField('Хэш id категории товаров',
                               max_length=csnt.MAX_HASH_LEN,
                               unique=True)
@@ -106,7 +106,7 @@ class Subcategory(models.Model):
     """Модель подкатегории товаров"""
     cat_id = models.ForeignKey(Category,
                                on_delete=models.CASCADE,
-                               related_name='categories')
+                               related_name='subcategories')
     subcat_id = models.CharField('Хэш id подкатегории товаров',
                                  max_length=csnt.MAX_HASH_LEN,
                                  unique=True)
@@ -127,7 +127,7 @@ class Product(models.Model):
                                  unique=True)
     pr_subcat_id = models.ForeignKey(Subcategory,
                                      on_delete=models.CASCADE,
-                                     related_name='subcategories')
+                                     related_name='products')
     pr_uom_id = models.IntegerField('Код единиц измерения товара')
 
     class Meta:
@@ -143,10 +143,10 @@ class Sale(models.Model):
     """Модель продажи"""
     st_id = models.ForeignKey(Shop,
                               on_delete=models.CASCADE,
-                              related_name='stores')
+                              related_name='sales')
     pr_sku_id = models.ForeignKey(Product,
                                   on_delete=models.CASCADE,
-                                  related_name='products')
+                                  related_name='sales')
     date = models.DateField('Дата')
     pr_sales_type_id = models.BooleanField('Флаг наличия промо')
     pr_sales_in_units = models.IntegerField('Продано товаров')

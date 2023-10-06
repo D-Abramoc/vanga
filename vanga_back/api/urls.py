@@ -8,6 +8,8 @@ from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     CustomTokenViewSet, MeUserViewSet,
                     GetSalesViewSet, RefreshTokenViewSet)
 from .views_logout import LogoutView
+from .views_trial_2 import (GroupsWithSalesInShop, CategoriesWithSalesInShop,
+                            SubcategoriesWithSalesInShop)
 
 app_name = 'api'
 
@@ -28,6 +30,13 @@ router_v1_only_get.register(
 )
 
 urlpatterns = [
+    # Paths for filters
+    path('v1/filters/groups_whith_sales/', GroupsWithSalesInShop.as_view({'get': 'list'})),
+    path('v1/filters/categories_with_sales/',
+         CategoriesWithSalesInShop.as_view({'get': 'list'})),
+    # path('v1/filters/subcategories_with_sales/',
+    #      SubcategoriesWithSalesInShop.as_view({'get': 'list'})),
+
     path('auth/logout/', LogoutView.as_view()),
     path('auth/users/', CustomUserViewSet.as_view({'post': 'create'})),
     path('auth/jwt/create/', CustomTokenViewSet.as_view()),
