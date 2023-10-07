@@ -6,11 +6,11 @@ from datetime import datetime
 
 def import_forecast():
     """Импорт прогнозных данных"""
-    sales_submission = pd.read_csv(r'data/sales_submission.csv')
+    fc_data = pd.read_csv(r'data/2023-07-18.csv')
     forecasts = []
-    calc_date = datetime.now().date()
+    calc_date = '2023-07-18'
 
-    for index, row in sales_submission.iterrows():
+    for index, row in fc_data.iterrows():
         forecasts.append(Forecast(
             calc_date=calc_date,
             st_id=m.Shop.objects.get(st_id=row['st_id']),
