@@ -40,7 +40,8 @@ class GroupsWithSalesInShop(viewsets.ModelViewSet):
                 required=True
             ),
             OpenApiParameter(
-                'group', OpenApiTypes.INT, OpenApiParameter.QUERY
+                'group', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                required=True
             )
         ]
     )

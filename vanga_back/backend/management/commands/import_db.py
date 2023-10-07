@@ -1,11 +1,12 @@
 import pandas as pd
 from backend import models as m
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 
 def import_pr_df_csv():
     """Импорт групп, категорий, подкатегорий и товаров"""
-    pr_df = pd.read_csv(r'data/pr_df.csv')
+    pr_df = pd.read_csv(settings.BASE_DIR / r'data/pr_df.csv')
     groups, categories, subcategories, products = [], [], [], []
 
     for pr_group_id in pr_df.pr_group_id.unique():
@@ -53,7 +54,7 @@ def import_pr_df_csv():
 
 def import_st_df_csv():
     """Импорт городов, дивизионов и магазинов"""
-    st_df = pd.read_csv(r'data/st_df.csv')
+    st_df = pd.read_csv(settings.BASE_DIR / r'data/st_df.csv')
     cities, divisions, shops = [], [], []
 
     for city_id in st_df.st_city_id.unique():

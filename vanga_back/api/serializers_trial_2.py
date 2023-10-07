@@ -1,4 +1,3 @@
-import collections
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
@@ -65,14 +64,16 @@ class GroupCategorySerializer(serializers.ModelSerializer):
 
     def get_categories(self, obj):
         '''Возвращает категории по которым в магазине были продажи'''
-        sales = Sale.objects.filter(
-            st_id=self.context['shop'], pr_sales_type_id=False
-        )
-        products = Product.objects.filter(sales__in=sales)
-        subcategories = Subcategory.objects.filter(products__in=products)
+        # sales = Sale.objects.filter(
+        #     st_id=self.context['shop'], pr_sales_type_id=False
+        # )
+        # products = Product.objects.filter(sales__in=sales)
+        # subcategories = Subcategory.objects.filter(products__in=products)
         queryset = (
             Category.objects
-            .filter(subcategories__in=subcategories)
+            .filter(subcategories__products__sales__pr_sales_type_id=False,
+                    subcategories__products__sales__st_id=self.context['shop'],
+                    group_id=self.context['group'])
             .distinct()
             .order_by('id')
         )
@@ -89,13 +90,16 @@ class CategoriesWithSalesSerializer(serializers.ModelSerializer):
 
     def get_groups(self, obj):
         '''Возвращает группы по которым в магазине были продажи'''
-        sales = Sale.objects.filter(st_id=obj, pr_sales_type_id=False)
-        products = Product.objects.filter(sales__in=sales)
-        subcategories = Subcategory.objects.filter(products__in=products)
-        categories = Category.objects.filter(subcategories__in=subcategories)
+        # sales = Sale.objects.filter(st_id=obj, pr_sales_type_id=False)
+        # products = Product.objects.filter(sales__in=sales)
+        # subcategories = Subcategory.objects.filter(products__in=products)
+        # categories = Category.objects.filter(subcategories__in=subcategories)
         queryset = (
-            Group.objects.filter(categories__in=categories)
-            .distinct().order_by('id')
+            Group.objects
+            .filter(
+                categories__subcategories__products__sales__pr_sales_type_id=False,
+                categories__subcategories__products__sales__st_id=obj
+            ).distinct().order_by('id')
         )
         if 'group' in self.context['request'].query_params:
             queryset = queryset.filter(
@@ -103,11 +107,11 @@ class CategoriesWithSalesSerializer(serializers.ModelSerializer):
             )
         serialiser = GroupCategorySerializer(
             queryset, many=True, context={
-                'shop': obj
+                'shop': obj, 'group': self.context['request'].query_params['group'] or None
             }
         )
         return serialiser.data
-    
+
     def to_representation(self, instance):
         res = super().to_representation(instance)
         # res_list = list(res.items())
@@ -133,14 +137,26 @@ class SubcategoriesSerializer(serializers.ModelSerializer):
 
 
 class CategorySubSerializer(serializers.ModelSerializer):
-    subcategories = SubcategoriesSerializer(
-        many=True
-    )
+    subcategories = serializers.SerializerMethodField('get_subcats')
 
     class Meta:
         model = Category
         fields = ('id', 'cat_id', 'group_id', 'subcategories')
-        list_serializer_class = FilterSubcategoriesSerialiser
+        #list_serializer_class = FilterSubcategoriesSerialiser
+    
+    def get_subcats(self, obj):
+        queryset = (
+            Subcategory.objects.filter(
+                products__sales__pr_sales_type_id=False,
+                cat_id=self.context['params']['category'],
+                cat_id__group_id=self.context['params']['group'],
+                products__sales__st_id=self.context['params']['store']
+            ).distinct('subcat_id')
+        )
+        serializer = SubcategoriesSerializer(
+            queryset, many=True, context={'params': self.context['params']}
+        )
+        return serializer.data
 
 
 class SubcategoriesWithSalesSerializer(serializers.ModelSerializer):
@@ -152,13 +168,16 @@ class SubcategoriesWithSalesSerializer(serializers.ModelSerializer):
 
     def get_categories(self, obj):
         '''Возвращает группы по которым в магазине были продажи'''
-        sales = Sale.objects.filter(st_id=obj, pr_sales_type_id=False)
-        products = Product.objects.filter(sales__in=sales)
-        subcategories = Subcategory.objects.filter(products__in=products)
+        # sales = Sale.objects.filter(st_id=obj, pr_sales_type_id=False)
+        # products = Product.objects.filter(sales__in=sales)
+        # subcategories = Subcategory.objects.filter(products__in=products)
         queryset = (
             Category.objects
-            .filter(subcategories__in=subcategories)
-            .distinct()
+            .filter(
+                subcategories__products__sales__pr_sales_type_id=False,
+                subcategories__products__sales__st_id=self.context['request'].query_params['store'],
+                group_id=self.context['request'].query_params['group']
+            ).distinct()
         )
         if 'group' in self.context['request'].query_params:
             queryset = queryset.filter(
