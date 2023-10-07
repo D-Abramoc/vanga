@@ -13,9 +13,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='saddagy435y)i0qqwer98e')
 
 DEBUG = True
 
-# ALLOWED_HOSTS = ['127.0.0.1',
-#                  'localhost', 'web']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1',
+                 'localhost', 'web']
 
 CSRF_TRUSTED_ORIGINS = ['http://*.158.160.123.145/', 'http://*.127.0.0.1/',
                         'http://*.localhost/']
