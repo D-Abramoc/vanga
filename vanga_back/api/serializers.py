@@ -93,16 +93,17 @@ class SubcategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     sku = serializers.CharField(source='pr_sku_id')
-    group = serializers.CharField(
-        source='pr_subcat_id.cat_id.group_id.group_id'
-    )
-    category = serializers.CharField(source='pr_subcat_id.cat_id.cat_id')
-    subcategory = serializers.CharField(source='pr_subcat_id.subcat_id')
-    uom = serializers.IntegerField(source='pr_uom_id')
+    # group = serializers.CharField(
+    #     source='pr_subcat_id.cat_id.group_id.group_id'
+    # )
+    # category = serializers.CharField(source='pr_subcat_id.cat_id.cat_id')
+    # subcategory = serializers.CharField(source='pr_subcat_id.subcat_id')
+    # uom = serializers.IntegerField(source='pr_uom_id')
 
     class Meta:
         model = Product
-        exclude = ['pr_uom_id', 'pr_subcat_id', 'pr_sku_id']
+        fields = ('id', 'sku')
+        # exclude = ['pr_uom_id', 'pr_subcat_id', 'pr_sku_id']
 
 
 class CitySerializer(serializers.ModelSerializer):

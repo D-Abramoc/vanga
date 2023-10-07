@@ -11,7 +11,7 @@ from .views_logout import LogoutView
 from .views_trial_2 import (GroupsWithSalesInShop, CategoriesWithSalesInShop,
                             SubcategoriesWithSalesInShop)
 from .views_forecast import ForecastViewSet as ForecastVS
-from .sales.views import CategoryViewSet as CategoryVS
+from .category.views import CategoryViewSet as CategoryVS
 
 app_name = 'api'
 
