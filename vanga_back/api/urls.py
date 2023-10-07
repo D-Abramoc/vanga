@@ -10,6 +10,8 @@ from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
 from .views_logout import LogoutView
 from .views_trial_2 import (GroupsWithSalesInShop, CategoriesWithSalesInShop,
                             SubcategoriesWithSalesInShop)
+from .views_forecast import ForecastViewSet as ForecastVS
+from .sales.views import CategoryViewSet as CategoryVS
 
 app_name = 'api'
 
@@ -30,12 +32,19 @@ router_v1_only_get.register(
 )
 
 urlpatterns = [
+    path('v1/filters/category/', CategoryVS.as_view({'get': 'list'})),
     # Paths for filters
-    path('v1/filters/groups_whith_sales/', GroupsWithSalesInShop.as_view({'get': 'list'})),
+    path(
+        'v1/filters/groups_whith_sales/',
+        GroupsWithSalesInShop.as_view({'get': 'list'})
+    ),
     path('v1/filters/categories_with_sales/',
          CategoriesWithSalesInShop.as_view({'get': 'list'})),
     path('v1/filters/subcategories_with_sales/',
          SubcategoriesWithSalesInShop.as_view({'get': 'list'})),
+
+    # Path for forecast
+    path('v1/forecast/get_forecast/', ForecastVS.as_view({'get': 'list'})),
 
     path('auth/logout/', LogoutView.as_view()),
     path('auth/users/', CustomUserViewSet.as_view({'post': 'create'})),

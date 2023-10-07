@@ -1,3 +1,4 @@
+import collections
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
@@ -60,7 +61,7 @@ class GroupCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = '__all__'
+        fields = ('id', 'categories',)
 
     def get_categories(self, obj):
         '''Возвращает категории по которым в магазине были продажи'''
@@ -106,6 +107,13 @@ class CategoriesWithSalesSerializer(serializers.ModelSerializer):
             }
         )
         return serialiser.data
+    
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        # res_list = list(res.items())
+        # res_list = list(res_list[0][1][0].items())
+        # return collections.OrderedDict(res_list)
+        return res
 
 
 class FilterSubcategoriesSerialiser(serializers.ListSerializer):
