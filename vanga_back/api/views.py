@@ -1,7 +1,10 @@
-from typing import Union
+from io import BytesIO
 
+import pandas as pd
 from backend.models import (Category, City, Division, Group, Product,
                             Sale, Shop)
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from forecast.models import Forecast
 from djoser import views
 from drf_spectacular.utils import (extend_schema, extend_schema_view,
@@ -9,6 +12,7 @@ from drf_spectacular.utils import (extend_schema, extend_schema_view,
                                    OpenApiExample)
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets, serializers
+from rest_framework.decorators import action
 from rest_framework_simplejwt.views import (
     TokenObtainPairView, TokenRefreshView
 )
@@ -78,6 +82,40 @@ class ForecastViewSet(viewsets.ModelViewSet):
     serializer_class = ForecastSerializer
     pagination_class = MaxLimitLimitOffsetPagination
     http_method_names = ('get', 'post')
+
+    @action(detail=False, methods=['get'],
+            url_name='download_forecast',
+            url_path='download_forecast')
+    def download_forecast(self, request):
+        filetype = request.query_params['filetype']
+        st_id = request.query_params['st_id']
+        pr_sku_id = request.query_params['pr_sku_id']
+
+        if filetype not in ['xlsx', 'csv']:
+            return HttpResponse('Неподдерживаемый формат файла', status=400)
+
+        shop = get_object_or_404(Shop, id=st_id)
+        product = get_object_or_404(Product, id=pr_sku_id)
+        forecast_items = Forecast.objects.filter(st_id=shop,
+                                                 pr_sku_id=product)
+
+        forecast_list = []
+        for forecast in forecast_items:
+            forecast_list.append([forecast.st_id,
+                                  forecast.pr_sku_id,
+                                  forecast.date,
+                                  forecast.target])
+        forecast_df = pd.DataFrame(forecast_list)
+
+        with BytesIO() as b:
+            writer = pd.ExcelWriter(b, engine='xlsxwriter')
+            forecast_df.to_excel(writer, index=False, header=False)
+            writer.close()
+            content_type = 'application/vnd.ms-excel'
+            response = HttpResponse(b.getvalue(), content_type=content_type)
+            response['Content-Disposition'] = f'attachment; filename="forecast.{filetype}"'
+
+        return response
 
 
 @extend_schema(tags=['Продажи'])
@@ -159,7 +197,7 @@ class CityViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema(
-        tags=['Продажи'])
+    tags=['Продажи'])
 @extend_schema_view(
     list=extend_schema(
         summary='Получить продажи за период по паре магазин-товар',
@@ -200,6 +238,7 @@ class GetSalesViewSet(viewsets.ModelViewSet):
             get_query_params(self.request.query_params)
         )
         return Shop.objects.filter(id__in=request_query_params['store'])
+
 # @api_view(['GET'])
 # def get_sales(request):
 #     if not request.query_params:

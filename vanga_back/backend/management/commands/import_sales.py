@@ -9,7 +9,7 @@ from forecast.functions import get_forecast, send_sales_to_ds
 
 
 BATCH_SIZE = 10000
-SLEEP_TIME = 120
+SLEEP_TIME = 480
 
 
 def import_sales_df(filename) -> None:
@@ -46,8 +46,8 @@ def import_sales_df(filename) -> None:
             sales = []
             imported_rows += BATCH_SIZE
             print(f'Импортировано {imported_rows} строк данных о продажах')
-        if imported_rows == 10_000:
-            break
+        # if imported_rows == BATCH_SIZE:
+        #     break
     m.Sale.objects.bulk_create(sales)
     print('Импорт продаж завершён')
     send_sales_to_ds(sales, DS_URL)

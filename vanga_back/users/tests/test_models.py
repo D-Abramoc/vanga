@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.test import TestCase
 
 from users.models import User
@@ -15,7 +16,7 @@ class UserModelTest(TestCase):
         """Проверяем, что у моделей корректно работает __str__."""
         user = UserModelTest.user
 
-        self.assertEqual(str(user),'TestUser')
+        self.assertEqual(str(user), 'TestUser')
 
     def test_post_verbose_name(self):
         """verbose_name в полях совпадает с ожидаемым."""
