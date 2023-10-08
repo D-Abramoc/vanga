@@ -25,7 +25,7 @@ class Forecast(BaseForecast):
     class Meta:
         verbose_name = 'Прогноз'
         verbose_name_plural = 'Прогнозы'
-        ordering = ['-date']
+        # ordering = ['-date']
 
     def __str__(self):
         return f'Товар: {str(self.pr_sku_id)}, Прогноз: {self.target})'
