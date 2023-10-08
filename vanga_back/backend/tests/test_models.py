@@ -75,7 +75,7 @@ class BackendModelTest(TestCase):
             with self.subTest(model=model):
                 self.assertEqual(str(model), expected_value)
 
-    def test_post_verbose_name(self):
+    def test_models_verbose_name(self):
         """verbose_name в полях совпадает с ожидаемым."""
         city = BackendModelTest.city
         division = BackendModelTest.division
@@ -112,3 +112,18 @@ class BackendModelTest(TestCase):
                 with self.subTest(field=field):
                     self.assertEqual(
                         model._meta.get_field(field).verbose_name, expected_value)
+
+    def test_sale_to_dict_method(self):
+        """Метод to_dict модели Sale отдает ожидаемые значения"""
+        sale = BackendModelTest.sale
+        expected_dict = {
+            'st_id': 'shop0000000000000000000000000001',
+            'pr_sku_id': 'product0000000000000000000000001',
+            'date': '2023-07-18',
+            'pr_sales_type_id': '1',
+            'pr_sales_in_units': '1',
+            'pr_promo_sales_in_units': '1',
+            'pr_sales_in_rub': '1',
+            'pr_promo_sales_in_rub': '1',
+        }
+        self.assertEqual(sale.to_dict(), expected_dict)
