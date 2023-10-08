@@ -2,19 +2,23 @@ import requests
 import json
 from datetime import datetime
 
-from .config import DS_URL
 from .models import Forecast
 from backend.models import Shop, Product, Sale
 
 
-def get_forecast() -> None:
-    """Получение прогнозных данных с сервера ML и сохранение в базу"""
-    url: str = f'{DS_URL}/get_predict'
+def get_forecast(ds_url: str) -> list[dict]:
+    """Получение прогнозных данных с сервера ML"""
+    url: str = f'{ds_url}/get_predict'
     response = requests.get(url).json()
     json_response = json.loads(response)
+    return json_response
+
+
+def save_forecast(fc_json: list[dict]) -> None:
+    """Сохранение полученного от ML прогноза в базу"""
     calc_date = datetime.now().date()
     forecasts: list = []
-    for forecast in json_response:
+    for forecast in fc_json:
         forecasts.append(Forecast(
             calc_date=calc_date,
             st_id=Shop.objects.get(st_id=forecast['st_id']),
@@ -24,9 +28,9 @@ def get_forecast() -> None:
     Forecast.objects.bulk_create(forecasts)
 
 
-def send_sales_to_ds(array: list[type[Sale]]) -> None:
+def send_sales_to_ds(array: list[type[Sale]], ds_url: str) -> None:
     """Отправка новых данных о продажах на сервер ML"""
-    url: str = f'{DS_URL}/update_sales'
+    url: str = f'{ds_url}/update_sales'
     sales_to_send = []
     for sale in array:
         sales_to_send.append(sale.to_dict())
