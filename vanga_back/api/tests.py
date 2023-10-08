@@ -16,7 +16,7 @@ class ApiTest(APITestCase):
         super().setUpClass()
         import_db.import_st_df_csv()
         import_db.import_pr_df_csv()
-        # import_sales_test.import_sales_df('sales_df_train_test.csv')
+        import_sales_test.import_sales_df('sales_df_train_test.csv')
 
     def setUp(self) -> None:
         self.client = APIClient()
@@ -38,7 +38,7 @@ class ApiTest(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_create_user(self):
+    def test_auth(self):
         '''Регистрация пользователя'''
         number_users = User.objects.count()
         data = {
@@ -150,3 +150,56 @@ class ApiTest(APITestCase):
                                 pr_subcat_id__cat_id=category['id']
                                 ).exists()), True
                         )
+
+    def test_filter_subcat(self):
+        response = self.auth_client.get('/api/v1/filters/groups_whith_sales/')
+        for shop in response.data:
+            for group in shop['groups']:
+                response = self.auth_client.get(
+                    (f'/api/v1/filters/category/'
+                     f'?store={shop["id"]}&group={group["id"]}')
+                )
+                for category in response.data:
+                    response = self.auth_client.get(
+                        (f'/api/v1/filters/subcategories_with_sales/'
+                         f'?store={shop["id"]}&group={group["id"]}'
+                         f'&category={category["id"]}')
+                    )
+                    for subcat in (
+                        response.data[0]['categories'][0]['subcategories']
+                    ):
+                        with self.subTest(subcat=subcat):
+                            self.assertTrue(
+                                (Product.objects.filter(
+                                    sales__pr_sales_type_id=False,
+                                    sales__st_id=shop['id'],
+                                    pr_subcat_id__cat_id__group_id=group['id'],
+                                    pr_subcat_id__cat_id=category['id'],
+                                    pr_subcat_id=subcat["id"]
+                                ).exists())
+                            )
+
+    def test_filter_product(self):
+        response = self.auth_client.get('/api/v1/filters/groups_whith_sales/')
+        for shop in response.data:
+            for group in shop['groups']:
+                response = self.auth_client.get(
+                    (f'/api/v1/filters/category/'
+                     f'?store={shop["id"]}&group={group["id"]}')
+                )
+                for category in response.data:
+                    response = self.auth_client.get(
+                        (f'/api/v1/filters/subcategories_with_sales/'
+                         f'?store={shop["id"]}&group={group["id"]}'
+                         f'&category={category["id"]}')
+                    )
+                    for subcat in (
+                        response.data[0]['categories'][0]['subcategories']
+                    ):
+                        response = self.auth_client.get(
+                            (f'/api/v1/filters/products/'
+                             f'?store={shop["id"]}&group={group["id"]}'
+                             f'&category={category["id"]}'
+                             f'&subcategory={subcat["id"]}')
+                        )
+                        self.assertTrue(response.data)
