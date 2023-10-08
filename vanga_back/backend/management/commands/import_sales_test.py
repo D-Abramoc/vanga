@@ -1,18 +1,15 @@
 import pandas as pd
 from backend import models as m
 from django.core.management.base import BaseCommand
-from time import sleep
-
-from forecast.functions import get_forecast, send_sales_to_ds
+from django.conf import settings
 
 
 BATCH_SIZE = 10000
-SLEEP_TIME = 120
 
 
 def import_sales_df(filename) -> None:
     """Импорт данных о продажах"""
-    sales_df = pd.read_csv(f'data/{filename}',
+    sales_df = pd.read_csv(settings.BASE_DIR / f'data/{filename}',
                            dtype={'st_id': 'category',
                                   'pr_sku_id': 'category',
                                   'pr_sales_type_id': 'int64',
@@ -40,19 +37,12 @@ def import_sales_df(filename) -> None:
         )
         if len(sales) == BATCH_SIZE:
             m.Sale.objects.bulk_create(sales)
-            # send_sales_to_ds(sales)
             sales = []
             imported_rows += BATCH_SIZE
             print(f'Импортировано {imported_rows} строк данных о продажах')
-    m.Sale.objects.bulk_create(sales)
+        if imported_rows == 10_000:
+            break
     print('Импорт продаж завершён')
-    # send_sales_to_ds(sales)
-    # print('Данные отправлены на сервер DS')
-    # print(f'Start sleep {SLEEP_TIME} seconds')
-    # sleep(SLEEP_TIME)
-    # print('Stop sleep, запрос прогноза')
-    # get_forecast()
-    # print('Прогноз получен')
 
 
 class Command(BaseCommand):

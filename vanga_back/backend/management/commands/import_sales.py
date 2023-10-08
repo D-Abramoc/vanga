@@ -41,21 +41,21 @@ def import_sales_df(filename) -> None:
         )
         if len(sales) == BATCH_SIZE:
             m.Sale.objects.bulk_create(sales)
-            # send_sales_to_ds(sales)
+            send_sales_to_ds(sales)
             sales = []
             imported_rows += BATCH_SIZE
             print(f'Импортировано {imported_rows} строк данных о продажах')
         if imported_rows == 10_000:
             break
-    # m.Sale.objects.bulk_create(sales)
+    m.Sale.objects.bulk_create(sales)
     print('Импорт продаж завершён')
-    # send_sales_to_ds(sales)
-    # print('Данные отправлены на сервер DS')
-    # print(f'Start sleep {SLEEP_TIME} seconds')
-    # sleep(SLEEP_TIME)
-    # print('Stop sleep, запрос прогноза')
-    # get_forecast()
-    # print('Прогноз получен')
+    send_sales_to_ds(sales)
+    print('Данные отправлены на сервер DS')
+    print(f'Start sleep {SLEEP_TIME} seconds')
+    sleep(SLEEP_TIME)
+    print('Stop sleep, запрос прогноза')
+    get_forecast()
+    print('Прогноз получен')
 
 
 class Command(BaseCommand):
