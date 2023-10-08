@@ -3,6 +3,7 @@ from backend import models as m
 from django.core.management.base import BaseCommand
 from time import sleep
 
+from forecast.config import DS_URL
 from forecast.functions import get_forecast, send_sales_to_ds
 
 
@@ -46,7 +47,7 @@ def import_sales_df(filename) -> None:
             print(f'Импортировано {imported_rows} строк данных о продажах')
     m.Sale.objects.bulk_create(sales)
     print('Импорт продаж завершён')
-    send_sales_to_ds(sales)
+    send_sales_to_ds(sales, DS_URL)
     print('Данные отправлены на сервер DS')
     print(f'Start sleep {SLEEP_TIME} seconds')
     sleep(SLEEP_TIME)
