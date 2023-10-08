@@ -1,11 +1,13 @@
 from http import HTTPStatus
 from rest_framework.test import APIClient, APITestCase
 from users.models import User
-from backend.models import Shop, Product, Sale
+from backend.models import Shop, Product
 
 from backend.management.commands import (
-    import_db, import_sales_test
+    import_db
 )
+from forecast.management.commands import import_fc_fake
+from backend.management.commands import import_sales_fake
 
 BATCH_SIZE = 10000
 
@@ -16,7 +18,8 @@ class ApiTest(APITestCase):
         super().setUpClass()
         import_db.import_st_df_csv()
         import_db.import_pr_df_csv()
-        import_sales_test.import_sales_df('sales_df_train_test.csv')
+        import_sales_fake.import_sales_df('sales_df_train_fake.csv')
+        import_fc_fake.import_forecast()
 
     def setUp(self) -> None:
         self.client = APIClient()
@@ -203,3 +206,13 @@ class ApiTest(APITestCase):
                              f'&subcategory={subcat["id"]}')
                         )
                         self.assertTrue(response.data)
+
+    def test_get_forecast(self):
+        response = self.auth_client.get(
+            '/api/v1/forecast/get_forecast/?store=12&product=1706'
+        )
+        self.assertTrue(response.data)
+        response = self.auth_client.get(
+            '/api/v1/forecast/get_forecast/?store=12&product=170'
+        )
+        self.assertFalse(response.data)
