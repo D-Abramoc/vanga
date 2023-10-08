@@ -28,4 +28,4 @@ class Forecast(BaseForecast):
         ordering = ['-date']
 
     def __str__(self):
-        return f'Товар: {str(self.pr_sku_id)}, Прогноз: {self.target})'
+        return f'Товар: {str(self.pr_sku_id)}, Прогноз: {self.target}'
