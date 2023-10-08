@@ -65,16 +65,33 @@ class ApiTest(APITestCase):
         for key in response.data.keys():
             with self.subTest(key=key):
                 self.assertTrue(key in expected_keys)
+        # Get current user
+        self.auth_client.force_authenticate(
+            user=User.objects.get(username=data['username'])
+        )
+        response = self.auth_client.get(
+            '/api/auth/users/me/'
+        )
+        self.assertEqual(
+            response.data['email'],
+            User.objects.get(username=data['username']).email
+        )
         # Refresh access token
         response = self.auth_client.post(
             '/api/auth/jwt/refresh/', data=refresh
         )
         new_access = response.data.values()
         self.assertNotEquals(new_access, access)
-
-    def test_import_db(self):
-        print(f'Stores : {Product.objects.count()}')
-        print(f'Sales: {Sale.objects.count()}')
+        # logout
+        self.auth_client.post(
+            '/api/auth/logout/', data=refresh
+        )
+        response = self.auth_client.post(
+            '/api/auth/jwt/refresh/', data=refresh
+        )
+        self.assertEqual(
+            response.status_code, HTTPStatus.BAD_REQUEST
+        )
 
     def test_filter_group(self):
         response = self.auth_client.get('/api/v1/filters/groups_whith_sales/')
