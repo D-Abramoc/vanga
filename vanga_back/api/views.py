@@ -128,6 +128,36 @@ class SaleViewSet(viewsets.ModelViewSet):
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
     pagination_class = MaxLimitLimitOffsetPagination
+    authentication_classes = []
+    permission_classes = []
+
+    @action(detail=False, methods=['post'],
+            url_name='upload',
+            url_path='upload')
+    def upload(self, request):
+        if len(request.FILES) != 1:
+            return HttpResponse('Вложите один файл для импорта', status=400)
+        file = next(request.FILES.values())
+        df = pd.read_csv(file)
+
+        sales = []
+        try:
+            for index, row in df.iterrows():
+                sales.append(Sale(
+                    st_id=Shop.objects.get(st_id=row['st_id']),
+                    pr_sku_id=Product.objects.get(pr_sku_id=row['pr_sku_id']),
+                    date=row['date'],
+                    pr_sales_type_id=row['pr_sales_type_id'],
+                    pr_sales_in_units=row['pr_sales_in_units'],
+                    pr_promo_sales_in_units=row['pr_promo_sales_in_units'],
+                    pr_sales_in_rub=row['pr_sales_in_rub'],
+                    pr_promo_sales_in_rub=row['pr_promo_sales_in_rub'])
+                )
+        except KeyError:
+            return HttpResponse('Неверный формат столбцов', status=201)
+        Sale.objects.bulk_create(sales)
+
+        return HttpResponse('Импорт продаж завершен', status=201)
 
 
 @extend_schema(tags=['Категории'])
