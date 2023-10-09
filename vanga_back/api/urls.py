@@ -13,6 +13,7 @@ from .views_trial_2 import (GroupsWithSalesInShop, CategoriesWithSalesInShop,
 from .views_forecast import ForecastViewSet as ForecastVS
 from .category.views import CategoryViewSet as CategoryVS
 from .product.views import ProductViewSet as ProductVS
+from .new_sales_views import NewSalesViewSet
 
 app_name = 'api'
 
@@ -33,6 +34,7 @@ router_v1_only_get.register(
 )
 
 urlpatterns = [
+    path('v1/get_sales/', NewSalesViewSet.as_view({'get': 'list'})),
     path('v1/filters/products/', ProductVS.as_view({'get': 'list'})),
     path('v1/filters/category/', CategoryVS.as_view({'get': 'list'})),
     # Paths for filters
