@@ -1,4 +1,4 @@
-export const API_MAIN_URL = 'http://127.0.0.1/api';
+export const API_MAIN_URL = 'http://158.160.123.145/api';
 export const API_BASE_URL = API_MAIN_URL + '/v1';
 export const REGISTER_URL = `${API_MAIN_URL}/auth/users/`;
 export const LOGIN_URL = `${API_MAIN_URL}/auth/jwt/create/`;
