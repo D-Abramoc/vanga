@@ -6,7 +6,8 @@ from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
                     DivisionViewSet, ForecastViewSet, GroupViewSet,
                     ProductViewSet, ShopViewSet,
                     CustomTokenViewSet, MeUserViewSet,
-                    GetSalesViewSet, RefreshTokenViewSet)
+                    GetSalesViewSet, RefreshTokenViewSet,
+                    SaleViewSet)
 from .views_logout import LogoutView
 from .views_trial_2 import (GroupsWithSalesInShop, CategoriesWithSalesInShop,
                             SubcategoriesWithSalesInShop)
@@ -31,6 +32,7 @@ router_v1_only_get.register(r'groups', GroupViewSet, basename='groups')
 router_v1_only_get.register(
     r'divisions', DivisionViewSet, basename='divisions'
 )
+router_v1.register(r'sales', SaleViewSet, basename='sales')
 
 urlpatterns = [
     path('v1/filters/products/', ProductVS.as_view({'get': 'list'})),
