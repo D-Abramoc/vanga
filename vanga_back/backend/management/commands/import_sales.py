@@ -46,8 +46,6 @@ def import_sales_df(filename) -> None:
             sales = []
             imported_rows += BATCH_SIZE
             print(f'Импортировано {imported_rows} строк данных о продажах')
-        # if imported_rows == BATCH_SIZE:
-        #     break
     m.Sale.objects.bulk_create(sales)
     print('Импорт продаж завершён')
     send_sales_to_ds(sales, DS_URL)
