@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='saddagy435y)i0qqwer98e')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', default=True)
 
 ALLOWED_HOSTS = ['127.0.0.1',
                  'localhost', 'web', '158.160.123.145']
@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'forecast.apps.ForecastConfig',
     'djoser',
     'rest_framework',
-    # 'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
