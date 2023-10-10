@@ -1,6 +1,6 @@
 from django.db import models
 
-from backend.models import Shop, Product
+from backend.models import Product, Shop
 
 
 class BaseForecast(models.Model):

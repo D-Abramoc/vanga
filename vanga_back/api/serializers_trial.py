@@ -1,7 +1,7 @@
 from django.db.models import QuerySet
 from rest_framework import serializers
 
-from backend.models import Shop, Product, Sale
+from backend.models import Product, Sale, Shop
 
 from .utils import get_query_params
 

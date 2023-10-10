@@ -1,14 +1,12 @@
-import pandas as pd
-import numpy as np
-
-from catboost import CatBoostRegressor
+import os
+import pickle
+import warnings
 from datetime import datetime, timedelta
 
-import pickle
+import numpy as np
+import pandas as pd
+from catboost import CatBoostRegressor
 
-import os
-
-import warnings
 warnings.filterwarnings('ignore')
 
 # задаём пути к сырым данным, списку праздников, папке с моделями и путь сохранения сабмита

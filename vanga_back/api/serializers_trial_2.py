@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
-from backend.models import (Shop, Group, Product, Subcategory, Category,
-                            Sale)
+from backend.models import Category, Group, Product, Sale, Shop, Subcategory
+from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 
 
 class GroupSerializer(serializers.ModelSerializer):

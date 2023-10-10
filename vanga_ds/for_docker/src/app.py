@@ -1,12 +1,11 @@
-from fastapi import FastAPI, Request
-from predict import prediction_submitions, get_dict_models
-from preprocessing import preproceccing_df
+import os
+
 import pandas as pd
-import json
 import requests
 import yaml
-
-import os
+from fastapi import FastAPI, Request
+from predict import get_dict_models, prediction_submitions
+from preprocessing import preproceccing_df
 
 # задаём пути и ссылки
 cwd = os.getcwd() 
@@ -76,9 +75,10 @@ def update_predictions(path_sales, path_pr, path_st, path_holidays, path_models,
 
 
 def send_predict_ready() -> None:
-    ''' функция для отправки сообщения, что предикт готов'''
+    """ функция для отправки сообщения, что предикт готов"""
     url: str = f'{URL_FOR_READY}/api/v1/ready'
-    requests.post(url, json.dumps(True))
+    requests.post(url, {"status": "ready"},
+                  headers={'Connection': 'close'})
 
 
 @app.get("/api/v1/health")
@@ -111,7 +111,7 @@ async def update_sales(request: Request):
                        PATH_TO_HOLIDAYS,
                        PATH_TO_MODELS,
                        PATH_TO_SUMISSION_DF)
-    send_predict_ready()
+    # send_predict_ready()
     return {"status": "update sales and submissions completed"}
 
 

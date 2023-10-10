@@ -8,6 +8,7 @@ RUN pip install poetry
 COPY ./poetry.lock ./pyproject.toml /app/
 
 COPY ./src /app
+COPY ./data /app
 COPY config.yaml /app
 
 
