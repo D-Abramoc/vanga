@@ -1,0 +1,6 @@
+venv
+.vscode
+migrations/
+__pycache__/
+.env
+.env.prod

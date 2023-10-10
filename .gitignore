@@ -1,1 +1,14 @@
 venv
+__pycache__/
+migrations/
+.vscode/
+*.sqlite3
+.env
+*.csv
+.idea
+.env.prod
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
