@@ -6,69 +6,19 @@ from backend.models import (Category, City, Division, Group, Product,
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from forecast.models import Forecast
-from djoser import views
 from drf_spectacular.utils import (extend_schema, extend_schema_view,
-                                   OpenApiParameter, OpenApiResponse,
-                                   OpenApiExample)
+                                   OpenApiParameter)
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView, TokenRefreshView
-)
 
 from .paginators import MaxLimitLimitOffsetPagination
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           ProductSerializer, SaleSerializer,
-                          ShopSerializer, MeUserSerializer,
-                          TestGroupSerializer, GroupSerializer)
+                          ShopSerializer, GroupSerializer)
 from .serializers_trial import StoreProductPeriodSerializer
 from .utils import get_query_params
-
-
-@extend_schema(tags=['Пользователь'])
-@extend_schema_view(
-    me=extend_schema(
-        summary='Данные текущего пользователя'
-    )
-)
-class MeUserViewSet(views.UserViewSet):
-    '''Данные текущего пользователя.'''
-    serializer_class = MeUserSerializer
-
-
-@extend_schema(tags=['Пользователь'])
-@extend_schema_view(
-    create=(extend_schema(
-        summary='Регистрация пользователя'
-    ))
-)
-class CustomUserViewSet(views.UserViewSet):
-    '''Регистрация нового пользователя.'''
-    pass
-
-
-@extend_schema(tags=['Пользователь'])
-@extend_schema_view(
-    post=extend_schema(
-        summary='Создать токен'
-    )
-)
-class CustomTokenViewSet(TokenObtainPairView):
-    '''Получение токена аутентификации пользователя.'''
-    pass
-
-
-@extend_schema(tags=['Пользователь'])
-@extend_schema_view(
-    post=extend_schema(
-        summary='Обновить токен'
-    )
-)
-class RefreshTokenViewSet(TokenRefreshView):
-    '''Обновление access token'''
-    pass
 
 
 @extend_schema(tags=['Прогноз'])
@@ -113,7 +63,9 @@ class ForecastViewSet(viewsets.ModelViewSet):
             writer.close()
             content_type = 'application/vnd.ms-excel'
             response = HttpResponse(b.getvalue(), content_type=content_type)
-            response['Content-Disposition'] = f'attachment; filename="forecast.{filetype}"'
+            response[
+                'Content-Disposition'
+            ] = f'attachment; filename="forecast.{filetype}"'
 
         return response
 

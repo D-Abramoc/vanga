@@ -10,7 +10,7 @@ urlpatterns = [
         'api/docs/', SpectacularSwaggerView.as_view(url_name='schema'),
         name='docs'
     ),
-    path('api/', include('api.urls', namespace='api')),
+    path('api/', include('api.urls.base', namespace='api')),
     path('api/', include('forecast.urls', namespace='forecast'))
 ]
 
