@@ -73,3 +73,4 @@ http://localhost/api/docs
 - [Docker] (https://www.docker.com/)
 - [Nginx] (https://nginx.org/ru/)
 - [PostgresQL] (https://www.postgresql.org/)
+- [Gunicorn] (https://gunicorn.org/)
