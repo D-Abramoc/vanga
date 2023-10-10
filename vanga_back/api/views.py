@@ -1,28 +1,26 @@
 from io import BytesIO
 
-import pandas as pd
-from backend.models import (Category, City, Division, Group, Product,
-                            Sale, Shop)
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from forecast.models import Forecast
-from djoser import views
-from drf_spectacular.utils import (extend_schema, extend_schema_view,
-                                   OpenApiParameter, OpenApiResponse,
-                                   OpenApiExample)
-from drf_spectacular.types import OpenApiTypes
-from rest_framework import viewsets, serializers
+from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView, TokenRefreshView
-)
+from djoser import views
+
+import pandas as pd
+from backend.models import Category, City, Division, Group, Product, Sale, Shop
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiExample, OpenApiParameter,
+                                   OpenApiResponse, extend_schema,
+                                   extend_schema_view)
+from forecast.models import Forecast
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
 from .paginators import MaxLimitLimitOffsetPagination
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
-                          ProductSerializer, SaleSerializer,
-                          ShopSerializer, MeUserSerializer,
-                          TestGroupSerializer, GroupSerializer)
+                          GroupSerializer, MeUserSerializer, ProductSerializer,
+                          SaleSerializer, ShopSerializer, TestGroupSerializer)
 from .serializers_trial import StoreProductPeriodSerializer
 from .utils import get_query_params
 

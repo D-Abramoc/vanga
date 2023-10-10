@@ -1,6 +1,7 @@
+from django.core.management.base import BaseCommand
+
 from backend import models as m
 from forecast.models import Forecast
-from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):

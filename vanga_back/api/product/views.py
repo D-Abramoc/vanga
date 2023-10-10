@@ -1,12 +1,12 @@
-from rest_framework import viewsets, filters
+from rest_framework import filters, viewsets
 from rest_framework.exceptions import ValidationError
-from drf_spectacular.utils import (extend_schema, extend_schema_view,
-                                   OpenApiParameter)
-from drf_spectacular.types import OpenApiTypes
-
-from .serializers import ProductSerialiser
 
 from backend.models import Product
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
+
+from .serializers import ProductSerialiser
 
 
 class ProductFilter(filters.BaseFilterBackend):

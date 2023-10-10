@@ -1,15 +1,15 @@
-import pandas as pd
-from forecast.models import Forecast
-from backend import models as m
 from django.core.management.base import BaseCommand
-from datetime import datetime
+
+import pandas as pd
+from backend import models as m
+from forecast.models import Forecast
 
 
 def import_forecast():
     """Импорт прогнозных данных"""
-    fc_data = pd.read_csv(r'data/2023-07-18.csv')
+    fc_data = pd.read_csv(r'data/2023-07-17.csv')
     forecasts = []
-    calc_date = '2023-07-18'
+    calc_date = '2023-07-16'
 
     for index, row in fc_data.iterrows():
         forecasts.append(Forecast(

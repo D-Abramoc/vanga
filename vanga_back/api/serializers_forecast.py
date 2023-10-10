@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Shop, Product
+from backend.models import Product, Shop
 from forecast.models import Forecast
 
 

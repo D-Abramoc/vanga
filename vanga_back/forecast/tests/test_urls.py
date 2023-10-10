@@ -1,5 +1,6 @@
-from django.test import TestCase, Client
-from http.client import METHOD_NOT_ALLOWED, BAD_REQUEST
+from http.client import BAD_REQUEST, METHOD_NOT_ALLOWED
+
+from django.test import Client, TestCase
 
 
 class ForecastURLTests(TestCase):

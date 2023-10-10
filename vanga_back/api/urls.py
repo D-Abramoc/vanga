@@ -1,19 +1,18 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .routers import OnlyGetRouter
-from .views import (CustomUserViewSet, CategoryViewSet, CityViewSet,
-                    DivisionViewSet, ForecastViewSet, GroupViewSet,
-                    ProductViewSet, ShopViewSet,
-                    CustomTokenViewSet, MeUserViewSet,
-                    GetSalesViewSet, RefreshTokenViewSet,
-                    SaleViewSet)
-from .views_logout import LogoutView
-from .views_trial_2 import (GroupsWithSalesInShop, CategoriesWithSalesInShop,
-                            SubcategoriesWithSalesInShop)
-from .views_forecast import ForecastViewSet as ForecastVS
 from .category.views import CategoryViewSet as CategoryVS
 from .product.views import ProductViewSet as ProductVS
+from .routers import OnlyGetRouter
+from .views import (CategoryViewSet, CityViewSet, CustomTokenViewSet,
+                    CustomUserViewSet, DivisionViewSet, ForecastViewSet,
+                    GetSalesViewSet, GroupViewSet, MeUserViewSet,
+                    ProductViewSet, RefreshTokenViewSet, SaleViewSet,
+                    ShopViewSet)
+from .views_forecast import ForecastViewSet as ForecastVS
+from .views_logout import LogoutView
+from .views_trial_2 import (CategoriesWithSalesInShop, GroupsWithSalesInShop,
+                            SubcategoriesWithSalesInShop)
 
 app_name = 'api'
 

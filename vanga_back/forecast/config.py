@@ -1,1 +1,1 @@
-DS_URL = 'http://127.0.0.1:8001/api/v1'
+DS_URL = 'http://host.docker.internal/api/v1'
