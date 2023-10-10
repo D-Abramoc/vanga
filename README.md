@@ -7,14 +7,17 @@
 - PM: Анастасия Шувалова [instagram](https://instagram.com/emma_evans9)
 - DS: Ярослав Князев [github](https://github.com/Yaroslav-Kn)
 - DS: Янис Пайст [github](https://github.com/IanisPaist)
-- DS: Евгений [github](link)
+- DS: Евгений Мусаев
 - Design: Эльвира Рассолова [behance](https://www.behance.net/b3b2f015)
 - Design: Ольга Новожилова [behance](https://www.behance.net/novozhilova)
 - Frontend: Антон Лысцов [github](https://github.com/777toha)
 - Frontend: Андрей Симонов [github](https://github.com/2web)
 - Backend: Дмитрий Абрамов [github](https://github.com/D-Abramoc)
 - Backend: Андрей Ядин [github](https://github.com/aayadin)
-
+## Проект доступен по url:
+```
+http://158.160.123.145
+```
 ## Запуск приложения ##
 - клонировать репозиторий
 ```
