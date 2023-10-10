@@ -1,8 +1,8 @@
 from django.urls import path
 
-from ..views_logout import LogoutView
 from ..views.auth import (MeUserViewSet, CustomUserViewSet,
-                          CustomTokenViewSet, RefreshTokenViewSet)
+                          CustomTokenViewSet, RefreshTokenViewSet,
+                          LogoutView)
 
 
 urlpatterns = [
