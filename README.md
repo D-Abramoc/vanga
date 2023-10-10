@@ -55,9 +55,9 @@ http://localhost/api/docs
 ```
 ## Описание работы ресурса ##
 
-/vanga_back: директория backend
-/vanga_ds: директория data science
-/dist: директория frontend
+- /vanga_back: директория backend
+- /vanga_ds: директория data science
+- /dist: директория frontend
 
 В части Backend реализованы 4 приложения:
 - backend - основные модели и команды управления
