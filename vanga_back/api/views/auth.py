@@ -1,13 +1,13 @@
 from djoser import views
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import permissions, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from ..serializers import MeUserSerializer
-from ..serializers_logout import RefreshTokenSerializer
+from ..serializers.serializers import MeUserSerializer
+from ..serializers.serializers_logout import RefreshTokenSerializer
 
 
 @extend_schema(tags=['Пользователь'])

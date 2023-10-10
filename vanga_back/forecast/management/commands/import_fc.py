@@ -1,8 +1,10 @@
-import pandas as pd
-from forecast.models import Forecast
-from backend import models as m
-from django.core.management.base import BaseCommand
 from datetime import datetime
+
+import pandas as pd
+from django.core.management.base import BaseCommand
+
+from backend import models as m
+from forecast.models import Forecast
 
 
 def import_forecast():

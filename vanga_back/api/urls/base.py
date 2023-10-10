@@ -2,13 +2,11 @@ from django.urls import include, path
 from rest_framework import routers
 
 from ..routers import OnlyGetRouter
-from ..views_old import (CategoryViewSet, CityViewSet,
-                         DivisionViewSet, ForecastViewSet, GroupViewSet,
-                         ProductViewSet, ShopViewSet,
-                         GetSalesViewSet,
-                         SaleViewSet)
-from ..views_forecast import ForecastViewSet as ForecastVS
-from ..new_sales_views import NewSalesViewSet
+from ..views.base import (CategoryViewSet, CityViewSet, DivisionViewSet,
+                          ForecastViewSet, GetSalesViewSet, GroupViewSet,
+                          ProductViewSet, SaleViewSet, ShopViewSet)
+from ..views.new_sales_views import NewSalesViewSet
+from ..views.views_forecast import ForecastViewSet as ForecastVS
 from .auth import urlpatterns as auth_urls
 from .selects import urlpatterns as filtres_urls
 

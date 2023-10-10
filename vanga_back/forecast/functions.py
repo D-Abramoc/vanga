@@ -1,9 +1,11 @@
-import requests
 import json
 from datetime import datetime
 
+import requests
+
+from backend.models import Product, Sale, Shop
+
 from .models import Forecast
-from backend.models import Shop, Product, Sale
 
 
 def get_forecast(ds_url: str) -> list[dict]:

@@ -1,10 +1,8 @@
 from django.urls import path
 
-from ..views.selects import (ProductViewSet, CategoryViewSet,
-                             GroupsWithSalesInShop,
-                             CategoriesWithSalesInShop,
+from ..views.selects import (CategoriesWithSalesInShop, CategoryViewSet,
+                             GroupsWithSalesInShop, ProductViewSet,
                              SubcategoriesWithSalesInShop)
-
 
 urlpatterns = [
     path('products/', ProductViewSet.as_view({'get': 'list'})),

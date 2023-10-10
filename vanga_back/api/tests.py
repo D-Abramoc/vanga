@@ -1,13 +1,11 @@
 from http import HTTPStatus
-from rest_framework.test import APIClient, APITestCase
-from users.models import User
-from backend.models import Shop, Product
 
-from backend.management.commands import (
-    import_db
-)
+from rest_framework.test import APIClient, APITestCase
+
+from backend.management.commands import import_db, import_sales_fake
+from backend.models import Product, Shop
 from forecast.management.commands import import_fc_fake
-from backend.management.commands import import_sales_fake
+from users.models import User
 
 BATCH_SIZE = 10000
 

@@ -1,10 +1,11 @@
-from backend.models import (Category, City, Division, Group, Product,
-                            Sale, Shop, Subcategory)
-from forecast.models import Forecast
 from django.core.paginator import Paginator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
+from backend.models import (Category, City, Division, Group, Product, Sale,
+                            Shop, Subcategory)
+from forecast.models import Forecast
 from users.models import User
 
 

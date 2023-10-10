@@ -1,9 +1,12 @@
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from http.client import BAD_REQUEST, CREATED
+
 from django.http import HttpResponse
-from http.client import CREATED, BAD_REQUEST
+from rest_framework.decorators import (api_view, authentication_classes,
+                                       permission_classes)
+
+from forecast.config import DS_URL
 
 from .functions import get_forecast, save_forecast
-from forecast.config import DS_URL
 
 
 @api_view(http_method_names=['POST'])

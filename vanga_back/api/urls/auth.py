@@ -1,9 +1,7 @@
 from django.urls import path
 
-from ..views.auth import (MeUserViewSet, CustomUserViewSet,
-                          CustomTokenViewSet, RefreshTokenViewSet,
-                          LogoutView)
-
+from ..views.auth import (CustomTokenViewSet, CustomUserViewSet, LogoutView,
+                          MeUserViewSet, RefreshTokenViewSet)
 
 urlpatterns = [
     path('logout/', LogoutView.as_view()),

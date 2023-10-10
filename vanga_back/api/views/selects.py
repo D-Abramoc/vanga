@@ -1,17 +1,17 @@
-from rest_framework import viewsets, filters
-from rest_framework.exceptions import ValidationError
-from drf_spectacular.utils import (extend_schema, extend_schema_view,
-                                   OpenApiParameter)
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
+from rest_framework import filters, viewsets
+from rest_framework.exceptions import ValidationError
 
-from ..product.serializers import ProductSerialiser
-from ..category.serializers import CategorySerialiser
-from ..serializers_trial_2 import (GroupWithSalesSerializer,
-                                   CategoriesWithSalesSerializer,
-                                   SubcategoriesWithSalesSerializer)
-from ..filters_trial_2 import ShopFilter
+from backend.models import Category, Product, Shop
 
-from backend.models import Product, Category, Shop
+from ..filters.filters_trial_2 import ShopFilter
+from ..serializers.serializers_category import CategorySerialiser
+from ..serializers.serializers_product import ProductSerialiser
+from ..serializers.serializers_trial_2 import (
+    CategoriesWithSalesSerializer, GroupWithSalesSerializer,
+    SubcategoriesWithSalesSerializer)
 
 
 class ProductFilter(filters.BaseFilterBackend):

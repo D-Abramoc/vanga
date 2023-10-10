@@ -1,12 +1,12 @@
-from rest_framework import viewsets
-from drf_spectacular.utils import (extend_schema, extend_schema_view,
-                                   OpenApiParameter)
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
+from rest_framework import viewsets
 
 from forecast.models import Forecast
 
-from .serializers_forecast import ForecastSerializer
-from .filter_forecast import ForecastByShopFilter
+from ..filters.filter_forecast import ForecastByShopFilter
+from ..serializers.serializers_forecast import ForecastSerializer
 
 
 @extend_schema_view(
