@@ -1,10 +1,10 @@
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (OpenApiParameter, extend_schema,
-                                   extend_schema_view)
 from rest_framework import filters, viewsets
 from rest_framework.exceptions import ValidationError
 
 from backend.models import Category, Product, Shop
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
 
 from ..filters.filters_trial_2 import ShopFilter
 from ..serializers.serializers_category import CategorySerialiser

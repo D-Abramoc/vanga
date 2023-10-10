@@ -1,9 +1,9 @@
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (OpenApiParameter, extend_schema,
-                                   extend_schema_view)
 from rest_framework import serializers, viewsets
 
 from backend.models import Sale
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
 
 
 class SaleSerializer(serializers.ModelSerializer):

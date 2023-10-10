@@ -2,9 +2,6 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import pandas as pd
-from django.conf import settings
-from django.core.management.base import BaseCommand
-
 from backend import models as m
 
 BATCH_SIZE = 10000

@@ -1,7 +1,7 @@
 
-import pandas as pd
 from django.core.management.base import BaseCommand
 
+import pandas as pd
 from backend import models as m
 from forecast.models import Forecast
 
