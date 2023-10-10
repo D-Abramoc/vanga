@@ -7,7 +7,8 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from ..serializers.serializers import MeUserSerializer
+from ..serializers.serializers import (MeUserSerializer,
+                                       CustomUserCreateSerializer)
 from ..serializers.serializers_logout import RefreshTokenSerializer
 
 
@@ -30,7 +31,7 @@ class MeUserViewSet(views.UserViewSet):
 )
 class CustomUserViewSet(views.UserViewSet):
     '''Регистрация нового пользователя.'''
-    pass
+    serializer_class = CustomUserCreateSerializer
 
 
 @extend_schema(tags=['Пользователь'])
