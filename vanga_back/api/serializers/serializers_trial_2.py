@@ -105,9 +105,6 @@ class CategoriesWithSalesSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         res = super().to_representation(instance)
-        # res_list = list(res.items())
-        # res_list = list(res_list[0][1][0].items())
-        # return collections.OrderedDict(res_list)
         return res
 
 
@@ -158,9 +155,6 @@ class SubcategoriesWithSalesSerializer(serializers.ModelSerializer):
 
     def get_categories(self, obj):
         '''Возвращает группы по которым в магазине были продажи'''
-        # sales = Sale.objects.filter(st_id=obj, pr_sales_type_id=False)
-        # products = Product.objects.filter(sales__in=sales)
-        # subcategories = Subcategory.objects.filter(products__in=products)
         queryset = (
             Category.objects
             .filter(

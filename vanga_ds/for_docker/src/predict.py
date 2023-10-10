@@ -1,9 +1,9 @@
 import os
-
 import pickle
-from catboost import CatBoostRegressor
 from datetime import datetime, timedelta
+
 import pandas as pd
+from catboost import CatBoostRegressor
 
 
 def get_dict_models (path: str) -> dict:

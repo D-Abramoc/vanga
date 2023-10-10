@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
 import pandas as pd
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -90,4 +93,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         import_st_df_csv()
         import_pr_df_csv()
-        # import_sales_df('sales_df_train.csv')

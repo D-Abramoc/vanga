@@ -1,4 +1,3 @@
-from datetime import datetime
 
 import pandas as pd
 from django.core.management.base import BaseCommand
@@ -9,9 +8,9 @@ from forecast.models import Forecast
 
 def import_forecast():
     """Импорт прогнозных данных"""
-    fc_data = pd.read_csv(r'data/2023-07-18.csv')
+    fc_data = pd.read_csv(r'data/2023-07-17.csv')
     forecasts = []
-    calc_date = '2023-07-18'
+    calc_date = '2023-07-16'
 
     for index, row in fc_data.iterrows():
         forecasts.append(Forecast(

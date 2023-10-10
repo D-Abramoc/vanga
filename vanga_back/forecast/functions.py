@@ -2,25 +2,20 @@ import json
 from datetime import datetime
 
 import requests
-
 from backend.models import Product, Sale, Shop
 
+from .config import DS_URL
 from .models import Forecast
 
 
-def get_forecast(ds_url: str) -> list[dict]:
-    """Получение прогнозных данных с сервера ML"""
-    url: str = f'{ds_url}/get_predict'
+def get_forecast() -> None:
+    """Получение прогнозных данных с сервера ML и сохранение в базу"""
+    url: str = f'{DS_URL}/get_predict'
     response = requests.get(url).json()
     json_response = json.loads(response)
-    return json_response
-
-
-def save_forecast(fc_json: list[dict]) -> None:
-    """Сохранение полученного от ML прогноза в базу"""
     calc_date = datetime.now().date()
     forecasts: list = []
-    for forecast in fc_json:
+    for forecast in json_response:
         forecasts.append(Forecast(
             calc_date=calc_date,
             st_id=Shop.objects.get(st_id=forecast['st_id']),

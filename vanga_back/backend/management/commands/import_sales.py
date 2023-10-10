@@ -9,10 +9,10 @@ from forecast.config import DS_URL
 from forecast.functions import get_forecast, send_sales_to_ds
 
 BATCH_SIZE = 10000
-SLEEP_TIME = 480
+SLEEP_TIME = 1200
 
 
-def import_sales_df(filename) -> None:
+def import_sales_df(filename: str, send: str) -> None:
     """Импорт данных о продажах"""
     sales_df = pd.read_csv(settings.BASE_DIR / f'data/{filename}',
                            dtype={'st_id': 'category',
@@ -42,14 +42,16 @@ def import_sales_df(filename) -> None:
         )
         if len(sales) == BATCH_SIZE:
             m.Sale.objects.bulk_create(sales)
-            send_sales_to_ds(sales)
+            if send == 'true':
+                send_sales_to_ds(sales)
             sales = []
             imported_rows += BATCH_SIZE
             print(f'Импортировано {imported_rows} строк данных о продажах')
     m.Sale.objects.bulk_create(sales)
     print('Импорт продаж завершён')
-    send_sales_to_ds(sales, DS_URL)
-    print('Данные отправлены на сервер DS')
+    if send == 'true':
+        send_sales_to_ds(sales, DS_URL)
+        print('Данные отправлены на сервер DS')
     print(f'Start sleep {SLEEP_TIME} seconds')
     sleep(SLEEP_TIME)
     print('Stop sleep, запрос прогноза')
@@ -66,7 +68,13 @@ class Command(BaseCommand):
             type=str,
             help='Название импортируемого файла с указанием формата .csv'
         )
+        parser.add_argument(
+            'send',
+            type=str,
+            help='true если отправлять на DS, false если нет'
+        )
 
     def handle(self, *args, **options):
         filename = options['filename']
-        import_sales_df(filename)
+        send = options['send']
+        import_sales_df(filename, send)
