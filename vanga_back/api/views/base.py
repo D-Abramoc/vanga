@@ -1,16 +1,16 @@
-from io import BytesIO
 from http import HTTPStatus
+from io import BytesIO
 
-import pandas as pd
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (OpenApiParameter, extend_schema,
-                                   extend_schema_view)
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 
+import pandas as pd
 from backend.models import Category, City, Division, Group, Product, Sale, Shop
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
 from forecast.models import Forecast
 
 from ..paginators import MaxLimitLimitOffsetPagination
