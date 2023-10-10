@@ -37,6 +37,9 @@ docker-compose exec -T web python manage.py migrate
 docker-compose exec -T web python manage.py collectstatic --no-input
 ```
 ### Импорт базы данных ###
+- предварительно разместить .csv файлы из архива в папках:
+1) /vanga_ds/for_docker/data
+2) /vanga_back/data
 - для базы данных (без продаж) выполнить команду:
 ```
 docker-compose exec -T web python manage.py import_db
