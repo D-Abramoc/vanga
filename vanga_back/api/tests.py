@@ -139,12 +139,6 @@ class ApiTest(APITestCase):
             User.objects.get(username='pirat@fake.fake')
         )
 
-    # def test_cities(self):
-    #     response = self.auth_client.get(
-    #         '/api/v1/cities/'
-    #     )
-    #     self.assertEqual(response.status_code, 200)
-
     def test_auth(self):
         '''Регистрация пользователя'''
         number_users = User.objects.count()
@@ -324,6 +318,18 @@ class ApiTest(APITestCase):
         ).exists())
 
     def test_api_v1_filters_categories_with_sales(self):
+        path = '/api/v1/filters/categories_with_sales/'
+        wrong_query_params = (
+            '?',
+            '?store=1',
+            '?group=1',
+        )
+        for filter in wrong_query_params:
+            with self.subTest(filter=filter):
+                response = self.auth_client.get(
+                    f'{path}{filter}'
+                )
+                self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
         response = self.auth_client.get(
             '/api/v1/filters/categories_with_sales/?store=1&group=1'
         )
