@@ -5,6 +5,7 @@ from rest_framework.test import APIClient, APITestCase
 
 from backend.management.commands import import_db, import_sales_fake
 from backend.models import Product, Shop, City, Division, Group, Category, Subcategory, Sale
+from forecast.models import Forecast
 from forecast.management.commands import import_fc_fake
 from users.models import User
 
@@ -123,6 +124,34 @@ class ApiTest(APITestCase):
             pr_promo_sales_in_units=0,
             pr_sales_in_rub=2000,
             pr_promo_sales_in_rub=0
+        )
+        Forecast.objects.create(
+            st_id=Shop.objects.get(st_id='first_store'),
+            pr_sku_id=Product.objects.get(pr_sku_id='first_product'),
+            date='2023-07-19',
+            target=2,
+            calc_date='2023-07-18'
+        )
+        Forecast.objects.create(
+            st_id=Shop.objects.get(st_id='first_store'),
+            pr_sku_id=Product.objects.get(pr_sku_id='first_product'),
+            date='2023-07-20',
+            target=5,
+            calc_date='2023-07-18'
+        )
+        Forecast.objects.create(
+            st_id=Shop.objects.get(st_id='first_store'),
+            pr_sku_id=Product.objects.get(pr_sku_id='first_product'),
+            date='2023-07-21',
+            target=7,
+            calc_date='2023-07-18'
+        )
+        Forecast.objects.create(
+            st_id=Shop.objects.get(st_id='first_store'),
+            pr_sku_id=Product.objects.get(pr_sku_id='first_product'),
+            date='2023-07-22',
+            target=2,
+            calc_date='2023-07-18'
         )
 
     def setUp(self) -> None:
@@ -324,13 +353,152 @@ class ApiTest(APITestCase):
             '?store=1',
             '?group=1',
         )
-        for filter in wrong_query_params:
-            with self.subTest(filter=filter):
+        for query in wrong_query_params:
+            with self.subTest(query=query):
                 response = self.auth_client.get(
-                    f'{path}{filter}'
+                    f'{path}{query}'
                 )
                 self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
         response = self.auth_client.get(
-            '/api/v1/filters/categories_with_sales/?store=1&group=1'
+            f'{path}?store=1&group=1'
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(
+            set(response.data[0].keys()), set(('groups',))
+        )
+        self.assertEqual(
+            set(response.data[0]['groups'][0].keys()),
+            set(('id', 'categories',))
+        )
+        self.assertEqual(
+            response.data[0]['groups'][0]['id'],
+            int(response.wsgi_request.GET['group'])
+        )
+        self.assertEqual(
+            set(response.data[0]['groups'][0]['categories'][0].keys()),
+            set(('id', 'cat_id', 'group_id',))
+        )
+
+    def test_api_v1_filters_subcategories_with_sales(self):
+        path = '/api/v1/filters/subcategories_with_sales/'
+        wrong_query_params = (
+            '?',
+            '?store=1',
+            '?store=1&group=1',
+            '?group=1&category=1'
+        )
+        for query in wrong_query_params:
+            with self.subTest(query=query):
+                response = self.auth_client.get(f'{path}{query}')
+                self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        response = self.auth_client.get(
+            f'{path}?store=1&group=1&category=1'
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(
+            set(response.data[0].keys()), set(('categories',))
+        )
+        self.assertEqual(
+            set(response.data[0]['categories'][0].keys()),
+            set(('id', 'cat_id', 'group_id', 'subcategories'))
+        )
+        self.assertEqual(
+            set(response.data[0]['categories'][0]['subcategories'][0].keys()),
+            set(('id', 'subcat_id', 'cat_id'))
+        )
+
+    def test_api_v1_filters_category(self):
+        path = '/api/v1/filters/category/'
+        wrong_query_params = (
+            '?',
+            '?store=1',
+            '?group=1',
+        )
+        for query in wrong_query_params:
+            with self.subTest(query=query):
+                response = self.auth_client.get(
+                    f'{path}{query}'
+                )
+                self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        response = self.auth_client.get(
+            f'{path}?store=1&group=1&category=1'
+        )
+        self.assertEqual(
+            set(response.data[0].keys()),
+            set(('id', 'cat_id', 'group_id',))
+        )
+
+    def test_api_v1_filters_products(self):
+        path = '/api/v1/filters/products/'
+        wrong_query_params = (
+            '?',
+            '?store=1',
+            '?store=1&group=1',
+            '?store=1&group=1&category=1',
+            '?group=1&category=1&subcategory=1',
+        )
+        for query in wrong_query_params:
+            with self.subTest(query=query):
+                response = self.auth_client.get(
+                    f'{path}{query}'
+                )
+                self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        response = self.auth_client.get(
+            f'{path}?store=1&group=1&category=1&subcategory=1'
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(
+            set(response.data[0].keys()), set(('id', 'pr_sku_id'))
+        )
+
+    def test_api_v1_forecast_get_forecast(self):
+        path = '/api/v1/forecast/get_forecast/'
+        wrong_query_params = (
+            '?',
+            '?store=1',
+            '?product=1'
+        )
+        for query in wrong_query_params:
+            with self.subTest(query=query):
+                response = self.auth_client.get(
+                    f'{path}{query}'
+                )
+                self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        response = self.auth_client.get(
+            f'{path}?store=1&product=1'
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(
+            set(response.data[0].keys()),
+            set(('id', 'st_id', 'product'))
+        )
+        self.assertEqual(
+            set(response.data[0]['product'].keys()),
+            set(('id', 'pr_sku_id', 'pr_uom_id', 'predict'))
+        )
+        self.assertEqual(
+            set(response.data[0]['product']['predict'][0].keys()),
+            set(('date', 'target'))
+        )
+
+    def test_api_v1_get_sales(self):
+        path = '/api/v1/get_sales/'
+        wrong_query_params = (
+            '?',
+            '?store=1',
+            '?sku=1'
+        )
+        for query in wrong_query_params:
+            with self.subTest(query=query):
+                response = self.auth_client.get(
+                    f'{path}{query}'
+                )
+                self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        response = self.auth_client.get(
+            f'{path}?store=1&sku=1'
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(
+            set(response.data[0].keys()),
+            set(('date', 'pr_sales_in_units',))
+        )

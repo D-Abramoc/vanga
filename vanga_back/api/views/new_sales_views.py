@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from rest_framework.exceptions import ValidationError
 
 from backend.models import Sale
 from drf_spectacular.types import OpenApiTypes
@@ -30,6 +31,10 @@ class NewSalesViewSet(viewsets.ModelViewSet):
     serializer_class = SaleSerializer
 
     def get_queryset(self):
+        if ('store' not in self.request.query_params
+                or 'sku' not in self.request.query_params):
+            raise ValidationError('Проверьте обязательные параметры: '
+                                  'store, sku')
         return (
             Sale.objects.filter(
                 st_id=self.request.query_params['store'],

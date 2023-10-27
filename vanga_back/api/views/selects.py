@@ -6,7 +6,9 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (OpenApiParameter, extend_schema,
                                    extend_schema_view)
 
-from ..filters.filters_trial_2 import ShopFilter, GroupFilter
+from ..filters.filters_trial_2 import (
+    ShopFilter, GroupFilterForValidate, CategoryFilterForValidate
+)
 from ..serializers.serializers_category import CategorySerialiser
 from ..serializers.serializers_product import ProductSerialiser
 from ..serializers.serializers_trial_2 import (
@@ -142,7 +144,7 @@ class GroupsWithSalesInShop(viewsets.ModelViewSet):
 class CategoriesWithSalesInShop(viewsets.ModelViewSet):
     serializer_class = CategoriesWithSalesSerializer
     queryset = Shop.objects.all()
-    filter_backends = (ShopFilter, GroupFilter)
+    filter_backends = (ShopFilter, GroupFilterForValidate)
 
 
 @extend_schema(tags=['Фильтры'])
@@ -168,4 +170,5 @@ class CategoriesWithSalesInShop(viewsets.ModelViewSet):
 class SubcategoriesWithSalesInShop(viewsets.ModelViewSet):
     serializer_class = SubcategoriesWithSalesSerializer
     queryset = Shop.objects.all()
-    filter_backends = (ShopFilter,)
+    filter_backends = (ShopFilter, GroupFilterForValidate,
+                       CategoryFilterForValidate)

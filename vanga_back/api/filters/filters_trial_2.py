@@ -1,8 +1,6 @@
 from rest_framework import filters
 from rest_framework.exceptions import ValidationError
 
-from backend import models as m
-
 
 class ShopFilter(filters.BaseFilterBackend):
 
@@ -12,9 +10,17 @@ class ShopFilter(filters.BaseFilterBackend):
         return queryset.filter(id=request.query_params['store'])
 
 
-class GroupFilter(filters.BaseFilterBackend):
+class GroupFilterForValidate(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         if 'group' not in request.query_params:
             raise ValidationError('group is required parameter.')
+        return queryset
+
+
+class CategoryFilterForValidate(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        if 'category' not in request.query_params:
+            raise ValidationError('category is required parameter.')
         return queryset
