@@ -3,10 +3,10 @@ from http import HTTPStatus
 from django.shortcuts import get_object_or_404
 from rest_framework.test import APIClient, APITestCase
 
-from backend.management.commands import import_db, import_sales_fake
-from backend.models import Product, Shop, City, Division, Group, Category, Subcategory, Sale
+from backend.models import (
+    Product, Shop, City, Division, Group, Category, Subcategory, Sale
+)
 from forecast.models import Forecast
-from forecast.management.commands import import_fc_fake
 from users.models import User
 
 BATCH_SIZE = 10000
@@ -70,7 +70,9 @@ class ApiTest(APITestCase):
         Shop.objects.create(
             st_id='first_store',
             st_city_id=City.objects.get(city_id='Moscow'),
-            st_division_code_id=Division.objects.get(division_code_id='first_division'),
+            st_division_code_id=Division.objects.get(
+                division_code_id='first_division'
+            ),
             st_type_format_id=28,
             st_type_loc_id=56,
             st_type_size_id=42,
@@ -79,7 +81,9 @@ class ApiTest(APITestCase):
         Shop.objects.create(
             st_id='second_store',
             st_city_id=City.objects.get(city_id='Kemerovo'),
-            st_division_code_id=Division.objects.get(division_code_id='second_division'),
+            st_division_code_id=Division.objects.get(
+                division_code_id='second_division'
+            ),
             st_type_format_id=28,
             st_type_loc_id=56,
             st_type_size_id=42,
@@ -254,7 +258,7 @@ class ApiTest(APITestCase):
 
     def test_api_v1_groups_id(self):
         group = Group.objects.first()
-        response = self.auth_client.get(f'/api/v1/grops/{group.id}/')
+        response = self.auth_client.get(f'/api/v1/groups/{group.id}/')
         self.assertEqual(response.data['group_id'], group.group_id)
 
     def test_api_v1_catrgories(self):
@@ -325,9 +329,8 @@ class ApiTest(APITestCase):
 
     def test_api_v1_filters_groups_whith_sales(self):
         response = self.auth_client.get(
-            '/api/v1/filters/groups_whith_sales/'
+            '/api/v1/filters/groups_whith_sales/?store=1'
         )
-        self.assertEqual(len(response.data), Shop.objects.count())
         self.assertEqual(
             set(response.data[0].keys()),
             set(
@@ -342,7 +345,8 @@ class ApiTest(APITestCase):
             st_id=get_object_or_404(Shop, id=response.data[0]['id']),
             pr_sku_id=get_object_or_404(
                 Product,
-                pr_subcat_id__cat_id__group_id=response.data[0]['groups'][0]['id']
+                pr_subcat_id__cat_id__group_id=(
+                    response.data[0]['groups'][0]['id'])
             )
         ).exists())
 
