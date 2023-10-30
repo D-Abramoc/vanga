@@ -44,7 +44,7 @@ class ProductsForecastSerializer(serializers.ModelSerializer):
         return res
 
 
-class ForecastSerializer(serializers.ModelSerializer):
+class ForecastForecastSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(source='st_id.id',
                                             read_only=True)
     st_id = serializers.SlugRelatedField(
