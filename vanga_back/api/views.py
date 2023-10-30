@@ -14,11 +14,11 @@ from drf_spectacular.utils import (OpenApiParameter, extend_schema,
 from forecast.models import Forecast
 
 from .paginators import MaxLimitLimitOffsetPagination
-from .serializers.serializers import (CategorySerializer, CitySerializer,
-                                      DivisionSerializer, ForecastSerializer,
-                                      GroupSerializer, ProductSerializer,
-                                      SaleSerializer, ShopSerializer)
-from .serializers.serializers_trial import StoreProductPeriodSerializer
+from .serializers import (CategorySerializer, CitySerializer,
+                          DivisionSerializer, ForecastSerializer,
+                          GroupSerializer, ProductSerializer,
+                          SaleSerializer, ShopSerializer)
+from .serializers import StoreProductPeriodSerializer
 from .utils import get_query_params
 
 # from auth
@@ -30,9 +30,8 @@ from djoser import views
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .serializers.serializers import (MeUserSerializer,
-                                      CustomUserCreateSerializer)
-from .serializers.serializers_logout import RefreshTokenSerializer
+from .serializers import (MeUserSerializer, CustomUserCreateSerializer)
+from .serializers import RefreshTokenSerializer
 
 # from select
 from rest_framework import filters
@@ -41,15 +40,15 @@ from rest_framework.exceptions import ValidationError
 from .filters.filters_trial_2 import (
     ShopFilter, GroupFilterForValidate, CategoryFilterForValidate
 )
-from .serializers.serializers_category import CategorySerialiser
-from .serializers.serializers_product import ProductSerialiser
-from .serializers.serializers_trial_2 import (
+from .serializers import CategorySerializersCategorySerialiser
+from .serializers import ProductSerializersProductSerialiser
+from .serializers import (
     CategoriesWithSalesSerializer, GroupWithSalesSerializer,
     SubcategoriesWithSalesSerializer)
 
 # from views_forecast
 from .filters.filter_forecast import ForecastByShopFilter
-from .serializers.serializers_forecast import ForecastForecastSerializer
+from .serializers import ForecastForecastSerializer
 
 
 # from new_sales_views
@@ -161,7 +160,7 @@ class ProductSelectFilter(filters.BaseFilterBackend):
     )
 )
 class ProductSelectViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductSerialiser
+    serializer_class = ProductSerializersProductSerialiser
     queryset = Product.objects.all()
     filter_backends = (ProductSelectFilter,)
 
@@ -201,7 +200,7 @@ class CategorySelectFilter(filters.BaseFilterBackend):
     )
 )
 class CategorySelectViewSet(viewsets.ModelViewSet):
-    serializer_class = CategorySerialiser
+    serializer_class = CategorySerializersCategorySerialiser
     queryset = Category.objects.all()
     filter_backends = (CategorySelectFilter,)
 
