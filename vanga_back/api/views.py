@@ -37,7 +37,7 @@ from .serializers import RefreshTokenSerializer
 from rest_framework import filters
 from rest_framework.exceptions import ValidationError
 
-from .filters.filters_trial_2 import (
+from .filters import (
     ShopFilter, GroupFilterForValidate, CategoryFilterForValidate
 )
 from .serializers import CategorySerializersCategorySerialiser
@@ -47,7 +47,7 @@ from .serializers import (
     SubcategoriesWithSalesSerializer)
 
 # from views_forecast
-from .filters.filter_forecast import ForecastByShopFilter
+from .filters import ForecastByShopFilter
 from .serializers import ForecastForecastSerializer
 
 
