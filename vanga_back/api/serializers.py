@@ -1,5 +1,3 @@
-# serializers
-from django.core.paginator import Paginator
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from djoser.serializers import UserCreateSerializer, UserSerializer
@@ -8,37 +6,23 @@ from backend.models import (Category, City, Division, Group, Product, Sale,
                             Shop, Subcategory)
 from forecast.models import Forecast
 from users.models import User
-
-# from serializers_trial
 from django.db.models import QuerySet
 from .utils import get_query_params
-
-# from serializers_trial_2
 from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
-
-# from serializers_logout
 from django.utils.text import gettext_lazy as _
-
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 
-# from serializers_category
-class CategorySerializersCategorySerialiser(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
 
-# from serializers_forecast
 class PredictSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Forecast
         fields = ('date', 'target')
-
-    def to_representation(self, instance):
-        res = super().to_representation(instance)
-        return res
 
 
 class ProductsForecastSerializer(serializers.ModelSerializer):
@@ -65,10 +49,6 @@ class ProductsForecastSerializer(serializers.ModelSerializer):
         serializer = PredictSerializer(queryset, many=True)
         return serializer.data
 
-    def to_representation(self, instance):
-        res = super().to_representation(instance)
-        return res
-
 
 class ForecastForecastSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(source='st_id.id',
@@ -87,12 +67,7 @@ class ForecastForecastSerializer(serializers.ModelSerializer):
         serializer = ProductsForecastSerializer(obj)
         return serializer.data
 
-    def to_representation(self, instance):
-        res = super().to_representation(instance)
-        return res
 
-
-# from serializers_logout
 class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
@@ -111,15 +86,13 @@ class RefreshTokenSerializer(serializers.Serializer):
             self.fail('bad_token')
 
 
-# from serializers_product
-class ProductSerializersProductSerialiser(serializers.ModelSerializer):
+class ProductSerializersProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'pr_sku_id')
 
 
-# from serializers_trial_2
-class GroupSerializersTrial2Serializer(serializers.ModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = '__all__'
@@ -159,14 +132,8 @@ class GroupWithSalesSerializer(serializers.ModelSerializer):
             Group.objects.filter(categories__in=categories)
             .distinct().order_by('id')
         )
-        serialiser = GroupSerializersTrial2Serializer(queryset, many=True)
+        serialiser = GroupSerializer(queryset, many=True)
         return serialiser.data
-
-
-class CategorySerializersTrial2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
 
 
 class GroupCategorySerializer(serializers.ModelSerializer):
@@ -186,7 +153,7 @@ class GroupCategorySerializer(serializers.ModelSerializer):
             .distinct()
             .order_by('id')
         )
-        serialiser = CategorySerializersTrial2Serializer(queryset, many=True)
+        serialiser = CategorySerializer(queryset, many=True)
         return serialiser.data
 
 
@@ -233,7 +200,7 @@ class FilterSubcategoriesSerialiser(serializers.ListSerializer):
         )
 
 
-class SubcategoriesSerializersTrial2Serializer(serializers.ModelSerializer):
+class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcategory
         fields = '__all__'
@@ -255,7 +222,7 @@ class CategorySubSerializer(serializers.ModelSerializer):
                 products__sales__st_id=self.context['params']['store']
             ).distinct('subcat_id')
         )
-        serializer = SubcategoriesSerializersTrial2Serializer(
+        serializer = SubcategorySerializer(
             queryset, many=True, context={'params': self.context['params']}
         )
         return serializer.data
@@ -397,18 +364,6 @@ class ForecastSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = '__all__'
-
-
 class DivisionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Division
@@ -433,25 +388,12 @@ class ShopSerializer(serializers.ModelSerializer):
                    'st_is_active']
 
 
-class SubcategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subcategory
-        fields = '__all__'
-
-
 class ProductSerializer(serializers.ModelSerializer):
     sku = serializers.CharField(source='pr_sku_id')
-    # group = serializers.CharField(
-    #     source='pr_subcat_id.cat_id.group_id.group_id'
-    # )
-    # category = serializers.CharField(source='pr_subcat_id.cat_id.cat_id')
-    # subcategory = serializers.CharField(source='pr_subcat_id.subcat_id')
-    # uom = serializers.IntegerField(source='pr_uom_id')
 
     class Meta:
         model = Product
         fields = ('id', 'sku')
-        # exclude = ['pr_uom_id', 'pr_subcat_id', 'pr_sku_id']
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -467,58 +409,12 @@ class DefaultShopSerializer(serializers.ModelSerializer):
 
 
 class SaleSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Sale
         fields = ('st_id', 'pr_sku_id', 'date', 'pr_sales_in_units',)
 
-    def to_representation(self, instance):
-        return super().to_representation(instance)
 
-
-class TestProductSerializer(serializers.ModelSerializer):
-    data = serializers.SerializerMethodField('get_sales')
-
-    class Meta:
-        model = Product
-        fields = ('id', 'pr_sku_id', 'data',)
-
-    def get_sales(self, obj):
-        page_size = 100
-        paginator = Paginator(obj.products.all(), page_size)
-        page = self.context['request'].query_params.get('page') or 1
-        sales = paginator.page(page)
-        serializer = TestSaleSerializer(
-            sales, many=True, context={'request': self.context['request']}
-        )
-        return serializer.data
-
-
-class TestSubcategorySerializer(serializers.ModelSerializer):
-    subcategories = TestProductSerializer(many=True)
-
-    class Meta:
-        model = Subcategory
-        fields = ('id', 'subcat_id', 'subcategories')
-
-
-class TestCategorySerializer(serializers.ModelSerializer):
-    categories = TestSubcategorySerializer(many=True)
-
-    class Meta:
-        model = Category
-        fields = ('id', 'cat_id', 'categories',)
-
-
-class TestGroupSerializer(serializers.ModelSerializer):
-    groups = TestCategorySerializer(many=True)
-
-    class Meta:
-        model = Group
-        fields = ('id', 'group_id', 'groups')
-
-
-class TestSaleSerializer(serializers.ModelSerializer):
+class NewSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sale
-        fields = '__all__'
+        fields = ('date', 'pr_sales_in_units')

@@ -5,12 +5,10 @@ from .routers import OnlyGetRouter
 from .views import (CityViewSet, DivisionViewSet,
                     ForecastViewSet, GetSalesViewSet, GroupViewSet,
                     SaleViewSet, ShopViewSet, CategoryViewSet,
-                    ProductViewSet)
-from .views import NewSalesViewSet
-from .views import ForecastForecastViewSet as ForecastVS
-from .views import (CustomTokenViewSet, CustomUserViewSet, LogoutView,
-                    MeUserViewSet, RefreshTokenViewSet)
-from .views import (CategoriesWithSalesInShop,
+                    ProductViewSet, NewSalesViewSet, ForecastForecastViewSet,
+                    CustomTokenViewSet, CustomUserViewSet, LogoutView,
+                    MeUserViewSet, RefreshTokenViewSet,
+                    CategoriesWithSalesInShop,
                     CategorySelectViewSet,
                     GroupsWithSalesInShop, ProductSelectViewSet,
                     SubcategoriesWithSalesInShop)
@@ -37,7 +35,10 @@ router_v1.register(r'sales', SaleViewSet, basename='sales')
 
 urlpatterns = [
     path('v1/get_sales/', NewSalesViewSet.as_view({'get': 'list'})),
-    path('v1/forecast/get_forecast/', ForecastVS.as_view({'get': 'list'})),
+    path(
+        'v1/forecast/get_forecast/',
+        ForecastForecastViewSet.as_view({'get': 'list'})
+    ),
     path(
         'v1/sales/store_product_period',
         GetSalesViewSet.as_view({'get': 'list'})

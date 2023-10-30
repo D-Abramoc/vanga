@@ -17,8 +17,14 @@ from .paginators import MaxLimitLimitOffsetPagination
 from .serializers import (CategorySerializer, CitySerializer,
                           DivisionSerializer, ForecastSerializer,
                           GroupSerializer, ProductSerializer,
-                          SaleSerializer, ShopSerializer)
-from .serializers import StoreProductPeriodSerializer
+                          SaleSerializer, ShopSerializer,
+                          StoreProductPeriodSerializer, MeUserSerializer,
+                          CustomUserCreateSerializer, RefreshTokenSerializer,
+                          ProductSerializersProductSerializer,
+                          CategoriesWithSalesSerializer,
+                          GroupWithSalesSerializer,
+                          SubcategoriesWithSalesSerializer, NewSaleSerializer,
+                          ForecastForecastSerializer)
 from .utils import get_query_params
 
 # from auth
@@ -30,32 +36,12 @@ from djoser import views
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .serializers import (MeUserSerializer, CustomUserCreateSerializer)
-from .serializers import RefreshTokenSerializer
-
-# from select
-from rest_framework import filters
 from rest_framework.exceptions import ValidationError
 
 from .filters import (
-    ShopFilter, GroupFilterForValidate, CategoryFilterForValidate
+    ShopFilter, GroupFilterForValidate, CategoryFilterForValidate,
+    CategorySelectFilter, ForecastByShopFilter, ProductSelectFilter
 )
-from .serializers import CategorySerializersCategorySerialiser
-from .serializers import ProductSerializersProductSerialiser
-from .serializers import (
-    CategoriesWithSalesSerializer, GroupWithSalesSerializer,
-    SubcategoriesWithSalesSerializer)
-
-# from views_forecast
-from .filters import ForecastByShopFilter
-from .serializers import ForecastForecastSerializer
-
-
-# from new_sales_views
-class NewSaleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sale
-        fields = ('date', 'pr_sales_in_units')
 
 
 @extend_schema_view(
@@ -110,31 +96,6 @@ class ForecastForecastViewSet(viewsets.ModelViewSet):
     queryset = Forecast.objects.all()
     filter_backends = (ForecastByShopFilter,)
 
-    def get_queryset(self):
-        res = super().get_queryset()
-        return res
-
-
-# from select
-class ProductSelectFilter(filters.BaseFilterBackend):
-
-    def filter_queryset(self, request, queryset, view):
-        if ('store' not in request.query_params
-                or 'group' not in request.query_params
-                or 'category' not in request.query_params
-                or 'subcategory' not in request.query_params):
-            raise ValidationError('An ass happen')
-        res = (
-            queryset.filter(
-                sales__st_id=(request.query_params['store']),
-                pr_subcat_id__cat_id__group_id=request.query_params['group'],
-                pr_subcat_id=request.query_params['subcategory'],
-                pr_subcat_id__cat_id=request.query_params['category'],
-                sales__pr_sales_type_id=False
-            )
-        )
-        return res.distinct('pr_sku_id')
-
 
 @extend_schema(tags=['Фильтры'])
 @extend_schema_view(
@@ -160,28 +121,9 @@ class ProductSelectFilter(filters.BaseFilterBackend):
     )
 )
 class ProductSelectViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductSerializersProductSerialiser
+    serializer_class = ProductSerializersProductSerializer
     queryset = Product.objects.all()
     filter_backends = (ProductSelectFilter,)
-
-
-class CategorySelectFilter(filters.BaseFilterBackend):
-
-    def filter_queryset(self, request, queryset, view):
-        if ('store' not in request.query_params
-                or 'group' not in request.query_params):
-            raise ValidationError('An ass happen')
-        res = (
-            queryset.filter(
-                subcategories__products__sales__st_id=(
-                    request.query_params['store']
-                ),
-                group_id=request.query_params['group'],
-                subcategories__products__sales__pr_sales_in_units__gt=0,
-                subcategories__products__sales__pr_sales_type_id=False
-            )
-        )
-        return res.distinct('cat_id')
 
 
 @extend_schema(tags=['Фильтры'])
@@ -200,7 +142,7 @@ class CategorySelectFilter(filters.BaseFilterBackend):
     )
 )
 class CategorySelectViewSet(viewsets.ModelViewSet):
-    serializer_class = CategorySerializersCategorySerialiser
+    serializer_class = CategorySerializer
     queryset = Category.objects.all()
     filter_backends = (CategorySelectFilter,)
 
@@ -338,7 +280,6 @@ class LogoutView(GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# from base
 @extend_schema(tags=['Прогноз'])
 @extend_schema_view(
     list=extend_schema(

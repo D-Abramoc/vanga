@@ -1,7 +1,4 @@
-# from filters
 from rest_framework import filters
-
-# from filters_trial
 from rest_framework.exceptions import ValidationError
 
 
@@ -81,3 +78,43 @@ class SKUFilter(filters.BaseFilterBackend):
         if 'sku' not in request.query_params:
             return queryset
         return queryset.filter(pr_sku_id__in=request.query_params.get('sku'))
+
+
+# from select
+class ProductSelectFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        if ('store' not in request.query_params
+                or 'group' not in request.query_params
+                or 'category' not in request.query_params
+                or 'subcategory' not in request.query_params):
+            raise ValidationError('An ass happen')
+        res = (
+            queryset.filter(
+                sales__st_id=(request.query_params['store']),
+                pr_subcat_id__cat_id__group_id=request.query_params['group'],
+                pr_subcat_id=request.query_params['subcategory'],
+                pr_subcat_id__cat_id=request.query_params['category'],
+                sales__pr_sales_type_id=False
+            )
+        )
+        return res.distinct('pr_sku_id')
+
+
+class CategorySelectFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        if ('store' not in request.query_params
+                or 'group' not in request.query_params):
+            raise ValidationError('An ass happen')
+        res = (
+            queryset.filter(
+                subcategories__products__sales__st_id=(
+                    request.query_params['store']
+                ),
+                group_id=request.query_params['group'],
+                subcategories__products__sales__pr_sales_in_units__gt=0,
+                subcategories__products__sales__pr_sales_type_id=False
+            )
+        )
+        return res.distinct('cat_id')
