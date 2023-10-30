@@ -59,7 +59,7 @@ class ProductFilter(filters.BaseFilterBackend):
         ]
     )
 )
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductSelectViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerialiser
     queryset = Product.objects.all()
     filter_backends = (ProductFilter,)
@@ -99,7 +99,7 @@ class CategoryFilter(filters.BaseFilterBackend):
         ]
     )
 )
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategorySelectViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerialiser
     queryset = Category.objects.all()
     filter_backends = (CategoryFilter,)
