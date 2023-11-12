@@ -1,37 +1,22 @@
 import datetime
-import os
 from io import StringIO
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 import pandas as pd
-import psycopg2.extras
 
 from backend import models as m
+from backend.functions import establish_connection
 from forecast.config import DS_URL
 from forecast.functions import send_sales_to_ds
 
 
-def establish_connection():
-    """Подключение к базе данных"""
-    print(f'{datetime.datetime.now()} / Установка соединения')
-    connection = psycopg2.connect(
-        host=os.getenv('DB_HOST'),
-        database=os.getenv('DB_NAME'),
-        user=os.getenv('POSTGRES_USER'),
-        password=os.getenv('POSTGRES_PASSWORD'),
-        port=os.getenv('DB_PORT')
-    )
-    connection.autocommit = True
-    return connection
-
-
-def get_store_id(store):
+def get_store_id(store) -> int:
     """Получение id магазина по хэшу"""
     return m.Shop.objects.get(st_id=store).id
 
 
-def get_product_id(product):
+def get_product_id(product) -> int:
     """Получение id товара по хэшу"""
     return m.Product.objects.get(pr_sku_id=product).id
 
@@ -41,11 +26,11 @@ def replace_shop_product_ids(df):
     print(f'{datetime.datetime.now()} / Замещение id магазинов в таблице')
     for store in df.st_id.unique():
         store_id = get_store_id(store)
-        df.replace(to_replace=store, value=store_id, inplace=True)
+        df.loc[df['st_id'] == store, 'st_id'] = store_id
     print(f'{datetime.datetime.now()} / Замещение id товаров в таблице')
     for product in df.pr_sku_id.unique():
         product_id = get_product_id(product)
-        df.replace(to_replace=product, value=product_id, inplace=True)
+        df.loc[df['pr_sku_id'] == product, 'pr_sku_id'] = product_id
     print(f'{datetime.datetime.now()} / Звершена подготовка таблицы')
     return df
 
@@ -72,11 +57,11 @@ def import_sales_df(filename: str, send: str) -> None:
     with connection.cursor() as cursor:
         cursor.copy_from(output, 'backend_sale', sep=',', columns=columns)
     print(f'{datetime.datetime.now()} / Импорт завершен')
+
     connection.close()
 
     if send == 'yes':
         send_sales_to_ds(sales, DS_URL)
-        print('Данные отправлены на сервер DS')
 
 
 class Command(BaseCommand):
