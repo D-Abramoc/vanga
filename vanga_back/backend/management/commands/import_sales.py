@@ -1,66 +1,71 @@
-from time import sleep
+import datetime
+from io import StringIO
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-
 import pandas as pd
-from backend import models as m
-from forecast.config import DS_URL
-from forecast.functions import get_forecast, send_sales_to_ds
 
-BATCH_SIZE = 10000
-SLEEP_TIME = 1200
+from backend import models as m
+from backend.functions import establish_connection
+from forecast.config import DS_URL
+from forecast.functions import send_sales_to_ds
+
+
+def get_store_id(store) -> int:
+    """Получение id магазина по хэшу"""
+    return m.Shop.objects.get(st_id=store).id
+
+
+def get_product_id(product) -> int:
+    """Получение id товара по хэшу"""
+    return m.Product.objects.get(pr_sku_id=product).id
+
+
+def replace_shop_product_ids(df):
+    """Замена хэшей магазинов и товаров на id"""
+    print(f'{datetime.datetime.now()} / Замещение id магазинов в таблице')
+    for store in df.st_id.unique():
+        store_id = get_store_id(store)
+        df.loc[df['st_id'] == store, 'st_id'] = store_id
+    print(f'{datetime.datetime.now()} / Замещение id товаров в таблице')
+    for product in df.pr_sku_id.unique():
+        product_id = get_product_id(product)
+        df.loc[df['pr_sku_id'] == product, 'pr_sku_id'] = product_id
+    print(f'{datetime.datetime.now()} / Звершена подготовка таблицы')
+    return df
 
 
 def import_sales_df(filename: str, send: str) -> None:
     """Импорт данных о продажах"""
-    sales_df = pd.read_csv(settings.BASE_DIR / f'data/{filename}',
-                           dtype={'st_id': 'category',
-                                  'pr_sku_id': 'category',
-                                  'pr_sales_type_id': 'int64',
-                                  'pr_sales_in_units': 'int64',
-                                  'pr_promo_sales_in_units': 'int64',
-                                  'pr_sales_in_rub': 'int64',
-                                  'pr_promo_sales_in_rub': 'int64',
-                                  },
-                           parse_dates=['date']
-                           )
+    connection = establish_connection()
+    columns: tuple = ('st_id_id',
+                      'pr_sku_id_id',
+                      'date',
+                      'pr_sales_type_id',
+                      'pr_sales_in_units',
+                      'pr_promo_sales_in_units',
+                      'pr_sales_in_rub',
+                      'pr_promo_sales_in_rub')
+    print(f'{datetime.datetime.now()} / Чтение файла')
+    sales = pd.read_csv(settings.BASE_DIR / f'data/{filename}')
+    output = StringIO()
+    print(f'{datetime.datetime.now()} / Подготовка данных')
+    replace_shop_product_ids(sales).to_csv(output, header=False, index=False)
+    output.seek(0)
+    print(f'{datetime.datetime.now()} / Запись в БД')
 
-    sales = []
-    imported_rows = 0
+    with connection.cursor() as cursor:
+        cursor.copy_from(output, 'backend_sale', sep=',', columns=columns)
+    print(f'{datetime.datetime.now()} / Импорт завершен')
 
-    for index, row in sales_df.iterrows():
-        sales.append(m.Sale(
-            st_id=m.Shop.objects.get(st_id=row['st_id']),
-            pr_sku_id=m.Product.objects.get(pr_sku_id=row['pr_sku_id']),
-            date=row['date'],
-            pr_sales_type_id=row['pr_sales_type_id'],
-            pr_sales_in_units=row['pr_sales_in_units'],
-            pr_promo_sales_in_units=row['pr_promo_sales_in_units'],
-            pr_sales_in_rub=row['pr_sales_in_rub'],
-            pr_promo_sales_in_rub=row['pr_promo_sales_in_rub'])
-        )
-        if len(sales) == BATCH_SIZE:
-            m.Sale.objects.bulk_create(sales)
-            if send == 'true':
-                send_sales_to_ds(sales)
-            sales = []
-            imported_rows += BATCH_SIZE
-            print(f'Импортировано {imported_rows} строк данных о продажах')
-    m.Sale.objects.bulk_create(sales)
-    print('Импорт продаж завершён')
-    if send == 'true':
+    connection.close()
+
+    if send == 'yes':
         send_sales_to_ds(sales, DS_URL)
-        print('Данные отправлены на сервер DS')
-    print(f'Start sleep {SLEEP_TIME} seconds')
-    sleep(SLEEP_TIME)
-    print('Stop sleep, запрос прогноза')
-    get_forecast()
-    print('Прогноз получен')
 
 
 class Command(BaseCommand):
-    help = 'Команда: python manage.py import_sales filename.csv'
+    help = 'Команда: python manage.py import_sales filename.csv yes/no'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -71,7 +76,7 @@ class Command(BaseCommand):
         parser.add_argument(
             'send',
             type=str,
-            help='true если отправлять на DS, false если нет'
+            help='yes если отправлять на DS, no если нет'
         )
 
     def handle(self, *args, **options):
